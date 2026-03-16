@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唐朝诗人星空 - Tang Dynasty Poets Star Map</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-deep: #0a0a12;
+            --bg-mid: #12121f;
+            --star-glow: #fff8e7;
+            --star-gold: #ffd700;
+            --star-silver: #c0c0c0;
+            --text-primary: #e8e4dc;
+            --text-secondary: #a09a8a;
+            --accent-red: #c94043;
+            --accent-gold: #d4a853;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', 'ZCOOL XiaoWei', serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .ui-overlay {
+            position: fixed;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .ui-overlay > * {
+            pointer-events: auto;
+        }
+        
+        .title-bar {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        
+        .title-bar h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            color: var(--text-primary);
+            text-shadow: 0 0 30px rgba(212, 168, 83, 0.5);
+            margin-bottom: 8px;
+        }
+        
+        .title-bar p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.2em;
+        }
+        
+        .poet-info-panel {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            background: linear-gradient(135deg, rgba(18, 18, 31, 0.95), rgba(10, 10, 18, 0.98));
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 4px;
+            padding: 30px;
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        .poet-info-panel.visible {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+        
+        .poet-info-panel .poet-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(212, 168, 83, 0.3);
+            padding-bottom: 15px;
+        }
+        
+        .poet-info-panel .poet-era {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .poet-info-panel .era-tag {
+            background: rgba(201, 64, 67, 0.2);
+            color: var(--accent-red);
+            padding: 4px 12px;
+            border-radius: 2px;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+        }
+        
+        .poet-info-panel .poet-works {
+            margin-bottom: 20px;
+        }
+        
+        .poet-info-panel .section-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .poet-info-panel .works-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .poet-info-panel .work-tag {
+            background: rgba(212, 168, 83, 0.1);
+            border: 1px solid rgba(212, 168, 83, 0.2);
+            color: var(--text-primary);
+            padding: 6px 14px;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .poet-info-panel .work-tag:hover {
+            background: rgba(212, 168, 83, 0.2);
+            border-color: var(--accent-gold);
+        }
+        
+        .poet-info-panel .poet-relations {
+            margin-top: 20px;
+        }
+        
+        .poet-info-panel .relation-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .poet-info-panel .relation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .poet-info-panel .relation-name {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .poet-info-panel .relation-type {
+            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 2px;
+            background: rgba(150, 150, 200, 0.15);
+            color: var(--text-secondary);
+        }
+        
+        .poet-info-panel .relation-type.bright {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--star-gold);
+        }
+        
+        .poet-info-panel .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .poet-info-panel .close-btn:hover {
+            color: var(--accent-gold);
+        }
+        
+        .controls-hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        
+        .controls-hint:hover {
+            opacity: 1;
+        }
+        
+        .controls-hint span {
+            display: inline-block;
+            margin: 0 15px;
+        }
+        
+        .controls-hint .key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        
+        .legend {
+            position: fixed;
+            left: 40px;
+            bottom: 40px;
+            z-index: 100;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .legend-dot.fame-1 { background: #fff; box-shadow: 0 0 15px #fff; }
+        .legend-dot.fame-2 { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
+        .legend-dot.fame-3 { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
+        .legend-dot.fame-4 { background: #808080; box-shadow: 0 0 5px #808080; }
+        
+        .legend-line {
+            width: 30px;
+            height: 2px;
+            margin-right: 10px;
+        }
+        
+        .legend-line.strong { background: rgba(255, 255, 255, 0.8); }
+        .legend-line.medium { background: rgba(255, 255, 255, 0.4); }
+        .legend-line.weak { background: rgba(255, 255, 255, 0.15); }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.3em;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loading">
+        <div class="loading-text">星辰正在汇聚...</div>
+    </div>
+    
+    <div id="canvas-container"></div>
+    
+    <div class="ui-overlay title-bar">
+        <h1>大唐诗人星图</h1>
+        <p>TANG DYNASTY POETS · 星辰般的诗魂</p>
+    </div>
+    
+    <div class="poet-info-panel" id="poet-panel">
+        <button class="close-btn" onclick="closePanel()">×</button>
+        <div class="poet-name" id="poet-name"></div>
+        <div class="poet-era">
+            <span class="era-tag" id="poet-era"></span>
+            <span id="poet-years"></span>
+        </div>
+        <div class="poet-works">
+            <div class="section-label">代表作品</div>
+            <div class="works-list" id="poet-works"></div>
+        </div>
+        <div class="poet-relations" id="poet-relations">
+            <div class="section-label">人物关系</div>
+            <div id="relations-list"></div>
+        </div>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot fame-1"></div>诗仙/诗圣</div>
+        <div class="legend-item"><div class="legend-dot fame-2"></div>名家</div>
+        <div class="legend-item"><div class="legend-dot fame-3"></div>重要诗人</div>
+        <div class="legend-item"><div class="legend-dot fame-4"></div>一般诗人</div>
+        <div class="legend-item" style="margin-top: 20px;"><div class="legend-line strong"></div>挚友/至亲</div>
+        <div class="legend-item"><div class="legend-line medium"></div>文坛同事</div>
+        <div class="legend-item"><div class="legend-line weak"></div>泛泛之交</div>
+    </div>
+    
+    <div class="controls-hint">
+        <span><span class="key">拖拽</span>旋转视角</span>
+        <span><span class="key">滚轮</span>缩放</span>
+        <span><span class="key">点击</span>查看诗人</span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const poetsData = [
+            { id: 1, name: "王绩", era: "初唐", works: ["《野望》"], fame: 3, relations: [{ name: "王勃", type: "亲属", strength: "strong" }] },
+            { id: 2, name: "卢照邻", era: "初唐", works: ["《长安古意》"], fame: 3, relations: [{ name: "王勃", type: "文坛同事", strength: "medium" }, { name: "杨炯", type: "文坛同事", strength: "medium" }, { name: "骆宾王", type: "文坛同事", strength: "medium" }] },
+            { id: 3, name: "骆宾王", era: "初唐", works: ["《咏鹅》", "《在狱咏蝉》"], fame: 3, relations: [{ name: "王勃", type: "文坛同事", strength: "medium" }, { name: "杨炯", type: "文坛同事", strength: "medium" }, { name: "卢照邻", type: "文坛同事", strength: "medium" }] },
+            { id: 4, name: "王勃", era: "初唐", works: ["《送杜少府之任蜀州》", "《滕王阁序》"], fame: 3, relations: [{ name: "杨炯", type: "文坛同事", strength: "medium" }, { name: "卢照邻", type: "文坛同事", strength: "medium" }, { name: "骆宾王", type: "文坛同事", strength: "medium" }, { name: "王绩", type: "亲属", strength: "strong" }] },
+            { id: 5, name: "杨炯", era: "初唐", works: ["《从军行》"], fame: 3, relations: [{ name: "王勃", type: "文坛同事", strength: "medium" }, { name: "卢照邻", type: "文坛同事", strength: "medium" }, { name: "骆宾王", type: "文坛同事", strength: "medium" }] },
+            { id: 6, name: "宋之问", era: "初唐", works: ["《度大庾岭》"], fame: 3, relations: [] },
+            { id: 7, name: "贺知章", era: "初唐", works: ["《咏柳》", "《回乡偶书》"], fame: 3, relations: [{ name: "李白", type: "挚友", strength: "strong" }, { name: "张若虚", type: "文坛同事", strength: "medium" }, { name: "张旭", type: "文坛同事", strength: "medium" }] },
+            { id: 8, name: "张若虚", era: "初唐", works: ["《春江花月夜》"], fame: 3, relations: [{ name: "贺知章", type: "文坛同事", strength: "medium" }, { name: "张旭", type: "文坛同事", strength: "medium" }] },
+            { id: 9, name: "陈子昂", era: "初唐", works: ["《登幽州台歌》"], fame: 3, relations: [] },
+            { id: 10, name: "杜审言", era: "初唐", works: ["《和晋陵陆丞早春游望》"], fame: 3, relations: [{ name: "杜甫", type: "亲属", strength: "strong" }] },
+            { id: 11, name: "张九龄", era: "初唐", works: ["《望月怀远》"], fame: 3, relations: [] },
+            { id: 12, name: "王翰", era: "盛唐", works: ["《凉州词》"], fame: 3, relations: [] },
+            { id: 13, name: "王之涣", era: "盛唐", works: ["《登鹳雀楼》", "《凉州词》"], fame: 3, relations: [{ name: "王昌龄", type: "泛泛之交", strength: "weak" }, { name: "高适", type: "泛泛之交", strength: "weak" }] },
+            { id: 14, name: "孟浩然", era: "盛唐", works: ["《春晓》", "《过故人庄》"], fame: 2, relations: [{ name: "王维", type: "挚友", strength: "strong" }, { name: "李白", type: "挚友", strength: "strong" }] },
+            { id: 15, name: "王昌龄", era: "盛唐", works: ["《出塞》", "《芙蓉楼送辛渐》"], fame: 3, relations: [{ name: "王之涣", type: "泛泛之交", strength: "weak" }, { name: "高适", type: "泛泛之交", strength: "weak" }] },
+            { id: 16, name: "李白", era: "盛唐", works: ["《将进酒》", "《蜀道难》", "《静夜思》", "《望庐山瀑布》"], fame: 1, relations: [{ name: "杜甫", type: "挚友", strength: "strong" }, { name: "孟浩然", type: "挚友", strength: "strong" }, { name: "贺知章", type: "挚友", strength: "strong" }, { name: "王维", type: "泛泛之交", strength: "weak" }] },
+            { id: 17, name: "王维", era: "盛唐", works: ["《山居秋暝》", "《九月九日忆山东兄弟》", "《送元二使安西》"], fame: 1, relations: [{ name: "孟浩然", type: "挚友", strength: "strong" }, { name: "裴迪", type: "挚友", strength: "strong" }, { name: "李白", type: "泛泛之交", strength: "weak" }] },
+            { id: 18, name: "杜甫", era: "盛唐", works: ["《春望》", "《登高》", "《茅屋为秋风所破歌》"], fame: 1, relations: [{ name: "李白", type: "挚友", strength: "strong" }, { name: "杜审言", type: "亲属", strength: "strong" }] },
+            { id: 19, name: "高适", era: "盛唐", works: ["《别董大》", "《燕歌行》"], fame: 2, relations: [{ name: "岑参", type: "泛泛之交", strength: "weak" }, { name: "王之涣", type: "泛泛之交", strength: "weak" }, { name: "王昌龄", type: "泛泛之交", strength: "weak" }] },
+            { id: 20, name: "岑参", era: "盛唐", works: ["《白雪歌送武判官归京》"], fame: 2, relations: [{ name: "高适", type: "泛泛之交", strength: "weak" }] },
+            { id: 21, name: "崔颢", era: "盛唐", works: ["《黄鹤楼》"], fame: 3, relations: [{ name: "李白", type: "泛泛之交", strength: "weak" }] },
+            { id: 22, name: "王湾", era: "盛唐", works: ["《次北固山下》"], fame: 4, relations: [] },
+            { id: 23, name: "张旭", era: "盛唐", works: ["《桃花溪》"], fame: 3, relations: [{ name: "贺知章", type: "文坛同事", strength: "medium" }, { name: "张若虚", type: "文坛同事", strength: "medium" }] },
+            { id: 24, name: "王冰", era: "盛唐", works: ["《野菊》"], fame: 4, relations: [] },
+            { id: 25, name: "韩愈", era: "中唐", works: ["《早春呈水部张十八员外》", "《师说》"], fame: 2, relations: [{ name: "柳宗元", type: "挚友", strength: "strong" }, { name: "刘禹锡", type: "挚友", strength: "strong" }, { name: "贾岛", type: "师徒", strength: "strong" }, { name: "李贺", type: "师徒", strength: "strong" }, { name: "孟郊", type: "挚友", strength: "strong" }] },
+            { id: 26, name: "柳宗元", era: "中唐", works: ["《江雪》", "《捕蛇者说》"], fame: 2, relations: [{ name: "韩愈", type: "挚友", strength: "strong" }, { name: "刘禹锡", type: "挚友", strength: "strong" }] },
+            { id: 27, name: "刘禹锡", era: "中唐", works: ["《陋室铭》", "《竹枝词》", "《乌衣巷》"], fame: 2, relations: [{ name: "柳宗元", type: "挚友", strength: "strong" }, { name: "白居易", type: "挚友", strength: "strong" }, { name: "韩愈", type: "挚友", strength: "strong" }] },
+            { id: 28, name: "白居易", era: "中唐", works: ["《琵琶行》", "《长恨歌》", "《赋得古原草送别》"], fame: 1, relations: [{ name: "元稹", type: "挚友", strength: "strong" }, { name: "刘禹锡", type: "挚友", strength: "strong" }] },
+            { id: 29, name: "元稹", era: "中唐", works: ["《离思》", "《菊花》"], fame: 2, relations: [{ name: "白居易", type: "挚友", strength: "strong" }] },
+            { id: 30, name: "贾岛", era: "中唐", works: ["《寻隐者不遇》"], fame: 3, relations: [{ name: "韩愈", type: "师徒", strength: "strong" }, { name: "孟郊", type: "挚友", strength: "strong" }] },
+            { id: 31, name: "李贺", era: "中唐", works: ["《雁门太守行》", "《马诗》"], fame: 2, relations: [{ name: "韩愈", type: "师徒", strength: "strong" }] },
+            { id: 32, name: "孟郊", era: "中唐", works: ["《游子吟》"], fame: 3, relations: [{ name: "韩愈", type: "挚友", strength: "strong" }, { name: "贾岛", type: "挚友", strength: "strong" }] },
+            { id: 33, name: "张籍", era: "中唐", works: ["《节妇吟》"], fame: 3, relations: [{ name: "韩愈", type: "泛泛之交", strength: "weak" }, { name: "白居易", type: "泛泛之交", strength: "weak" }, { name: "王建", type: "泛泛之交", strength: "weak" }] },
+            { id: 34, name: "王建", era: "中唐", works: ["《十五夜望月寄杜郎中》"], fame: 3, relations: [{ name: "张籍", type: "泛泛之交", strength: "weak" }] },
+            { id: 35, name: "刘方平", era: "中唐", works: ["《月夜》", "《春怨》"], fame: 4, relations: [] },
+            { id: 36, name: "顾况", era: "中唐", works: ["《宫词》"], fame: 4, relations: [] },
+            { id: 37, name: "卢仝", era: "中唐", works: ["《走笔谢孟谏议寄新茶》"], fame: 4, relations: [{ name: "韩愈", type: "挚友", strength: "strong" }] },
+            { id: 38, name: "李益", era: "中唐", works: ["《夜上受降城闻笛》"], fame: 3, relations: [] },
+            { id: 39, name: "杜牧", era: "晚唐", works: ["《清明》", "《山行》", "《赤壁》"], fame: 1, relations: [{ name: "李商隐", type: "挚友", strength: "strong" }] },
+            { id: 40, name: "李商隐", era: "晚唐", works: ["《无题》", "《锦瑟》", "《夜雨寄北》"], fame: 1, relations: [{ name: "杜牧", type: "挚友", strength: "strong" }, { name: "温庭筠", type: "挚友", strength: "strong" }] },
+            { id: 41, name: "温庭筠", era: "晚唐", works: ["《商山早行》", "《更漏子》"], fame: 2, relations: [{ name: "韦庄", type: "挚友", strength: "strong" }, { name: "李商隐", type: "挚友", strength: "strong" }, { name: "鱼玄机", type: "师徒", strength: "strong" }] },
+            { id: 42, name: "韦庄", era: "晚唐", works: ["《菩萨蛮》", "《秦妇吟》"], fame: 2, relations: [{ name: "温庭筠", type: "挚友", strength: "strong" }] },
+            { id: 43, name: "罗隐", era: "晚唐", works: ["《蜂》", "《自遣》"], fame: 3, relations: [] },
+            { id: 44, name: "杜荀鹤", era: "晚唐", works: ["《山中寡妇》", "《春宫怨》"], fame: 4, relations: [] },
+            { id: 45, name: "郑谷", era: "晚唐", works: ["《鹧鸪》"], fame: 4, relations: [{ name: "齐己", type: "挚友", strength: "strong" }] },
+            { id: 46, name: "鱼玄机", era: "晚唐", works: ["《闺怨》", "《江陵愁望有寄》"], fame: 3, relations: [{ name: "温庭筠", type: "师徒", strength: "strong" }] },
+            { id: 47, name: "韩偓", era: "晚唐", works: ["《已凉》"], fame: 4, relations: [] },
+            { id: 48, name: "李群玉", era: "晚唐", works: ["《黄陵庙》"], fame: 4, relations: [] },
+            { id: 49, name: "杜秋娘", era: "晚唐", works: ["《金缕衣》"], fame: 4, relations: [] },
+            { id: 50, name: "聂夷中", era: "晚唐", works: ["《伤田家》"], fame: 4, relations: [] },
+            { id: 51, name: "秦韬玉", era: "晚唐", works: ["《贫女》"], fame: 4, relations: [] },
+            { id: 52, name: "来鹏", era: "晚唐", works: ["《偶题》"], fame: 4, relations: [] }
+        ];
+
+        let scene, camera, renderer;
+        let stars = [];
+        let starMeshes = [];
+        let lines = [];
+        let raycaster, mouse;
+        let selectedPoet = null;
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let sphereRotation = { x: 0, y: 0 };
+
+        function init() {
+            scene = new THREE.Scene();
+            
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 100;
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+
+            createPoetStars();
+            createConnections();
+            addEventListeners();
+            
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 1500);
+            
+            animate();
+        }
+
+        function createPoetStars() {
+            const fameColors = {
+                1: { color: 0xffffff, emissive: 0xffd700, intensity: 2.0 },
+                2: { color: 0xffd700, emissive: 0xffa500, intensity: 1.5 },
+                3: { color: 0xc0c0c0, emissive: 0x909090, intensity: 1.0 },
+                4: { color: 0x808080, emissive: 0x606060, intensity: 0.6 }
+            };
+            
+            const fameSizes = {
+                1: 2.2,
+                2: 1.8,
+                3: 1.4,
+                4: 1.0
+            };
+
+            poetsData.forEach((poet, index) => {
+                const phi = Math.acos(-1 + (2 * index) / poetsData.length);
+                const theta = Math.sqrt(poetsData.length * Math.PI) * phi;
+                
+                const radius = 40;
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+                
+                const size = fameSizes[poet.fame];
+                const colors = fameColors[poet.fame];
+                
+                const starGeometry = new THREE.CircleGeometry(size, 32);
+                const starMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.color,
+                    transparent: true,
+                    opacity: 0.95,
+                    side: THREE.DoubleSide
+                });
+                
+                const star = new THREE.Mesh(starGeometry, starMaterial);
+                star.position.set(x, y, z);
+                star.lookAt(0, 0, 0);
+                star.userData = { poet: poet };
+                
+                const glowGeometry = new THREE.CircleGeometry(size * 2, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.emissive,
+                    transparent: true,
+                    opacity: 0.2,
+                    side: THREE.DoubleSide
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(x, y, z);
+                glow.lookAt(0, 0, 0);
+                glow.userData = { poet: poet };
+                
+                const outerGlowGeometry = new THREE.CircleGeometry(size * 3, 32);
+                const outerGlowMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.emissive,
+                    transparent: true,
+                    opacity: 0.08,
+                    side: THREE.DoubleSide
+                });
+                const outerGlow = new THREE.Mesh(outerGlowGeometry, outerGlowMaterial);
+                outerGlow.position.set(x, y, z);
+                outerGlow.lookAt(0, 0, 0);
+                outerGlow.userData = { poet: poet };
+                
+                stars.push(star);
+                starMeshes.push(star, glow, outerGlow);
+                scene.add(star);
+                scene.add(glow);
+                scene.add(outerGlow);
+            });
+        }
+
+        function createConnections() {
+            const relationStrengths = {
+                strong: { opacity: 0.7 },
+                medium: { opacity: 0.35 },
+                weak: { opacity: 0.12 }
+            };
+
+            poetsData.forEach(poet => {
+                poet.relations.forEach(relation => {
+                    const targetPoet = poetsData.find(p => p.name === relation.name);
+                    if (targetPoet) {
+                        const sourceIndex = poetsData.indexOf(poet);
+                        const targetIndex = poetsData.indexOf(targetPoet);
+                        
+                        if (sourceIndex < targetIndex) {
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / poetsData.length);
+                            const sourceTheta = Math.sqrt(poetsData.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / poetsData.length);
+                            const targetTheta = Math.sqrt(poetsData.length * Math.PI) * targetPhi;
+                            
+                            const radius = 40;
+                            const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
+                            const sourceY = radius * Math.sin(sourcePhi) * Math.sin(sourceTheta);
+                            const sourceZ = radius * Math.cos(sourcePhi);
+                            
+                            const targetX = radius * Math.sin(targetPhi) * Math.cos(targetTheta);
+                            const targetY = radius * Math.sin(targetPhi) * Math.sin(targetTheta);
+                            const targetZ = radius * Math.cos(targetPhi);
+                            
+                            const points = [
+                                new THREE.Vector3(sourceX, sourceY, sourceZ),
+                                new THREE.Vector3(targetX, targetY, targetZ)
+                            ];
+                            
+                            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                            const opacity = relationStrengths[relation.strength].opacity;
+                            
+                            const material = new THREE.LineBasicMaterial({
+                                color: 0xffffff,
+                                transparent: true,
+                                opacity: opacity
+                            });
+                            
+                            const line = new THREE.Line(geometry, material);
+                            line.userData = { 
+                                source: poet.name, 
+                                target: relation.name, 
+                                strength: relation.strength,
+                                type: relation.type
+                            };
+                            
+                            lines.push(line);
+                            scene.add(line);
+                        }
+                    }
+                });
+            });
+        }
+
+        function addEventListeners() {
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('mousedown', onMouseDown);
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            renderer.domElement.addEventListener('mouseup', onMouseUp);
+            renderer.domElement.addEventListener('wheel', onMouseWheel);
+            renderer.domElement.addEventListener('click', onClick);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onMouseDown(event) {
+            isDragging = true;
+            previousMousePosition = { x: event.clientX, y: event.clientY };
+        }
+
+        function onMouseMove(event) {
+            if (isDragging) {
+                const deltaX = event.clientX - previousMousePosition.x;
+                const deltaY = event.clientY - previousMousePosition.y;
+                
+                sphereRotation.y += deltaX * 0.005;
+                sphereRotation.x += deltaY * 0.005;
+                
+                previousMousePosition = { x: event.clientX, y: event.clientY };
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        function onMouseWheel(event) {
+            camera.position.z += event.deltaY * 0.05;
+            camera.position.z = Math.max(50, Math.min(200, camera.position.z));
+        }
+
+        function onClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(starMeshes);
+            
+            if (intersects.length > 0) {
+                const clickedObject = intersects[0].object;
+                if (clickedObject.userData && clickedObject.userData.poet) {
+                    showPoetInfo(clickedObject.userData.poet);
+                }
+            }
+        }
+
+        function showPoetInfo(poet) {
+            selectedPoet = poet;
+            
+            document.getElementById('poet-name').textContent = poet.name;
+            document.getElementById('poet-era').textContent = poet.era;
+            document.getElementById('poet-years').textContent = '';
+            
+            const worksContainer = document.getElementById('poet-works');
+            worksContainer.innerHTML = '';
+            poet.works.forEach(work => {
+                const tag = document.createElement('span');
+                tag.className = 'work-tag';
+                tag.textContent = work;
+                worksContainer.appendChild(tag);
+            });
+            
+            const relationsContainer = document.getElementById('relations-list');
+            relationsContainer.innerHTML = '';
+            
+            if (poet.relations && poet.relations.length > 0) {
+                poet.relations.forEach(relation => {
+                    const item = document.createElement('div');
+                    item.className = 'relation-item';
+                    item.innerHTML = `
+                        <span class="relation-name">${relation.name}</span>
+                        <span class="relation-type ${relation.strength === 'strong' ? 'bright' : ''}">${relation.type}</span>
+                    `;
+                    relationsContainer.appendChild(item);
+                });
+            } else {
+                relationsContainer.innerHTML = '<div class="relation-item"><span class="relation-name" style="color: var(--text-secondary);">没有记录的关系</span></div>';
+            }
+            
+            document.getElementById('poet-panel').classList.add('visible');
+        }
+
+        function closePanel() {
+            document.getElementById('poet-panel').classList.remove('visible');
+            selectedPoet = null;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            scene.rotation.x = sphereRotation.x;
+            scene.rotation.y = sphereRotation.y;
+            
+            stars.forEach((star, index) => {
+                const pulse = Math.sin(Date.now() * 0.002 + index * 0.5) * 0.15 + 1;
+                star.scale.setScalar(pulse);
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+</html>
