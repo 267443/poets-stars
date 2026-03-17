@@ -762,7 +762,9 @@
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
                 if (clickedObject.userData && clickedObject.userData.poet) {
-                    showPoetInfo(clickedObject.userData.poet);
+                    const poet = clickedObject.userData.poet;
+                    navigateToPoet(poet.id);
+                    showPoetInfo(poet);
                 }
             }
         }
@@ -894,8 +896,6 @@
             
             const targetPoet = targetStar.userData.poet;
             
-            highlightStar(targetStar);
-            
             const starPosition = new THREE.Vector3();
             targetStar.getWorldPosition(starPosition);
             
@@ -931,6 +931,7 @@
                 if (progress < 1) {
                     requestAnimationFrame(animateCamera);
                 } else {
+                    highlightStar(targetStar);
                     if (fromRelationClick) {
                         showPoetInfo(targetPoet, true);
                     }
