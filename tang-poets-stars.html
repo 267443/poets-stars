@@ -364,6 +364,18 @@
             margin-bottom: 12px;
             font-size: 0.75rem;
             color: var(--text-secondary);
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .legend-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .legend-item.inactive {
+            opacity: 0.35;
         }
         
         .legend-dot {
@@ -371,12 +383,18 @@
             height: 12px;
             border-radius: 50%;
             margin-right: 10px;
+            transition: all 0.3s ease;
         }
         
         .legend-dot.fame-1 { background: #fff; box-shadow: 0 0 15px #fff; }
         .legend-dot.fame-2 { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
         .legend-dot.fame-3 { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
         .legend-dot.fame-4 { background: #808080; box-shadow: 0 0 5px #808080; }
+        
+        .legend-item.inactive .legend-dot {
+            box-shadow: none;
+            opacity: 0.3;
+        }
         
         .legend-line {
             width: 30px;
@@ -460,10 +478,10 @@
     </div>
     
     <div class="legend">
-        <div class="legend-item"><div class="legend-dot fame-1"></div>诗仙/诗圣</div>
-        <div class="legend-item"><div class="legend-dot fame-2"></div>名家</div>
-        <div class="legend-item"><div class="legend-dot fame-3"></div>重要诗人</div>
-        <div class="legend-item"><div class="legend-dot fame-4"></div>一般诗人</div>
+        <div class="legend-item" data-fame="1"><div class="legend-dot fame-1"></div>诗仙/诗圣</div>
+        <div class="legend-item" data-fame="2"><div class="legend-dot fame-2"></div>名家</div>
+        <div class="legend-item" data-fame="3"><div class="legend-dot fame-3"></div>重要诗人</div>
+        <div class="legend-item" data-fame="4"><div class="legend-dot fame-4"></div>一般诗人</div>
         <div class="legend-item" style="margin-top: 20px;"><div class="legend-line strong"></div>挚友/至亲</div>
         <div class="legend-item"><div class="legend-line medium"></div>文坛同事</div>
         <div class="legend-item"><div class="legend-line weak"></div>泛泛之交</div>
@@ -717,6 +735,64 @@
             renderer.domElement.addEventListener('mouseup', onMouseUp);
             renderer.domElement.addEventListener('wheel', onMouseWheel);
             renderer.domElement.addEventListener('click', onClick);
+            
+            initCategoryFilters();
+        }
+        
+        let activeFameLevels = [1, 2, 3, 4];
+        
+        function initCategoryFilters() {
+            const legendItems = document.querySelectorAll('.legend-item[data-fame]');
+            legendItems.forEach(item => {
+                item.classList.add('active');
+                item.addEventListener('click', () => {
+                    const fame = parseInt(item.dataset.fame);
+                    const index = activeFameLevels.indexOf(fame);
+                    if (index > -1) {
+                        activeFameLevels.splice(index, 1);
+                        item.classList.remove('active');
+                        item.classList.add('inactive');
+                    } else {
+                        activeFameLevels.push(fame);
+                        activeFameLevels.sort((a, b) => a - b);
+                        item.classList.add('active');
+                        item.classList.remove('inactive');
+                    }
+                    filterStars();
+                });
+            });
+        }
+        
+        function filterStars() {
+            stars.forEach(star => {
+                if (star.userData && star.userData.poet) {
+                    const fame = star.userData.poet.fame;
+                    if (activeFameLevels.includes(fame)) {
+                        star.visible = true;
+                    } else {
+                        star.visible = false;
+                    }
+                }
+            });
+            
+            starMeshes.forEach(mesh => {
+                if (mesh.userData && mesh.userData.poet) {
+                    const fame = mesh.userData.poet.fame;
+                    mesh.visible = activeFameLevels.includes(fame);
+                }
+            });
+            
+            lines.forEach(line => {
+                if (line.userData && line.userData.source && line.userData.target) {
+                    const sourcePoet = poetsData.find(p => p.name === line.userData.source);
+                    const targetPoet = poetsData.find(p => p.name === line.userData.target);
+                    if (sourcePoet && targetPoet) {
+                        const sourceVisible = activeFameLevels.includes(sourcePoet.fame);
+                        const targetVisible = activeFameLevels.includes(targetPoet.fame);
+                        line.visible = sourceVisible && targetVisible;
+                    }
+                }
+            });
         }
 
         function onWindowResize() {
@@ -761,7 +837,7 @@
             
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
-                if (clickedObject.userData && clickedObject.userData.poet) {
+                if (clickedObject.userData && clickedObject.userData.poet && clickedObject.visible) {
                     const poet = clickedObject.userData.poet;
                     navigateToPoet(poet.id);
                     showPoetInfo(poet);
