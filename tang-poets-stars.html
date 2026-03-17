@@ -642,6 +642,20 @@
         }
 
         function showPoetInfo(poet) {
+            const targetStar = stars.find(star => star.userData.poet.id === poet.id);
+            if (targetStar) {
+                const originalOpacity = targetStar.material.opacity;
+                let flashCount = 0;
+                const flashInterval = setInterval(() => {
+                    targetStar.material.opacity = flashCount % 2 === 0 ? 1 : 0.5;
+                    flashCount++;
+                    if (flashCount >= 4) {
+                        clearInterval(flashInterval);
+                        targetStar.material.opacity = originalOpacity;
+                    }
+                }, 100);
+            }
+            
             selectedPoet = poet;
             
             document.getElementById('poet-name').textContent = poet.name;
@@ -675,6 +689,16 @@
             }
             
             document.getElementById('poet-panel').classList.add('visible');
+            
+            lines.forEach(line => {
+                const originalOpacity = line.material.opacity;
+                if (line.userData.source === poet.name || line.userData.target === poet.name) {
+                    line.material.opacity = 1;
+                    setTimeout(() => {
+                        line.material.opacity = originalOpacity;
+                    }, 3000);
+                }
+            });
         }
 
         function closePanel() {
@@ -689,7 +713,10 @@
             scene.rotation.y = sphereRotation.y;
             
             stars.forEach((star, index) => {
-                const pulse = Math.sin(Date.now() * 0.002 + index * 0.5) * 0.15 + 1;
+                const poet = star.userData.poet;
+                const speed = poet.fame === 1 ? 0.004 : poet.fame === 2 ? 0.003 : poet.fame === 3 ? 0.002 : 0.001;
+                const scale = poet.fame === 1 ? 0.3 : poet.fame === 2 ? 0.2 : poet.fame === 3 ? 0.15 : 0.1;
+                const pulse = Math.sin(Date.now() * speed + index * 0.5) * scale + 1;
                 star.scale.setScalar(pulse);
             });
             
