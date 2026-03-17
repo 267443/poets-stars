@@ -175,8 +175,20 @@
         }
         
         .poet-info-panel .relation-name {
-            color: var(--text-primary);
+            color: var(--accent-gold);
             font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            padding: 2px 4px;
+            border-radius: 2px;
+            text-shadow: 0 0 8px rgba(212, 168, 83, 0.6);
+        }
+        
+        .poet-info-panel .relation-name.disabled {
+            cursor: default;
+            opacity: 0.5;
+            color: var(--text-primary);
+            text-shadow: none;
         }
         
         .poet-info-panel .relation-type {
@@ -548,6 +560,15 @@
             scene.add(ambientLight);
 
             createPoetStars();
+            
+            const poetIdToStar = {};
+            stars.forEach(star => {
+                if (star.userData && star.userData.poet && star.userData.poet.id) {
+                    poetIdToStar[star.userData.poet.id] = star;
+                }
+            });
+            window.poetIdToStar = poetIdToStar;
+            
             createConnections();
             addEventListeners();
             
@@ -746,19 +767,21 @@
             }
         }
 
-        function showPoetInfo(poet) {
-            const targetStar = stars.find(star => star.userData.poet.id === poet.id);
-            if (targetStar) {
-                const originalOpacity = targetStar.material.opacity;
-                let flashCount = 0;
-                const flashInterval = setInterval(() => {
-                    targetStar.material.opacity = flashCount % 2 === 0 ? 1 : 0.5;
-                    flashCount++;
-                    if (flashCount >= 4) {
-                        clearInterval(flashInterval);
-                        targetStar.material.opacity = originalOpacity;
-                    }
-                }, 100);
+        function showPoetInfo(poet, skipCameraAnimation = false) {
+            if (!skipCameraAnimation) {
+                const targetStar = stars.find(star => star.userData.poet.id === poet.id);
+                if (targetStar) {
+                    const originalOpacity = targetStar.material.opacity;
+                    let flashCount = 0;
+                    const flashInterval = setInterval(() => {
+                        targetStar.material.opacity = flashCount % 2 === 0 ? 1 : 0.5;
+                        flashCount++;
+                        if (flashCount >= 4) {
+                            clearInterval(flashInterval);
+                            targetStar.material.opacity = originalOpacity;
+                        }
+                    }, 100);
+                }
             }
             
             selectedPoet = poet;
@@ -791,12 +814,29 @@
             
             if (poet.relations && poet.relations.length > 0) {
                 poet.relations.forEach(relation => {
+                    const relatedPoet = poetsData.find(p => p.name === relation.name);
+                    const hasStar = !!relatedPoet;
+                    
                     const item = document.createElement('div');
                     item.className = 'relation-item';
-                    item.innerHTML = `
-                        <span class="relation-name">${relation.name}</span>
-                        <span class="relation-type ${relation.strength === 'strong' ? 'bright' : ''}">${relation.type}</span>
-                    `;
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'relation-name' + (hasStar ? '' : ' disabled');
+                    nameSpan.textContent = relation.name;
+                    
+                    if (hasStar) {
+                        nameSpan.dataset.poetId = relatedPoet.id;
+                        nameSpan.addEventListener('click', () => {
+                            navigateToPoet(relatedPoet.id, true);
+                        });
+                    }
+                    
+                    const typeSpan = document.createElement('span');
+                    typeSpan.className = 'relation-type' + (relation.strength === 'strong' ? ' bright' : '');
+                    typeSpan.textContent = relation.type;
+                    
+                    item.appendChild(nameSpan);
+                    item.appendChild(typeSpan);
                     relationsContainer.appendChild(item);
                 });
             } else {
@@ -844,6 +884,85 @@
             document.getElementById('poet-panel').classList.remove('visible');
             closeWorkPanel();
             selectedPoet = null;
+        }
+
+        function navigateToPoet(poetId, fromRelationClick = false) {
+            const targetStar = window.poetIdToStar[poetId];
+            if (!targetStar) {
+                return;
+            }
+            
+            const targetPoet = targetStar.userData.poet;
+            
+            highlightStar(targetStar);
+            
+            const starPosition = new THREE.Vector3();
+            targetStar.getWorldPosition(starPosition);
+            
+            const targetDir = starPosition.clone().normalize();
+            const cameraDir = new THREE.Vector3(0, 0, 1);
+            
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(targetDir, cameraDir);
+            
+            const euler = new THREE.Euler();
+            euler.setFromQuaternion(quaternion);
+            
+            const targetRotationX = sphereRotation.x + euler.x;
+            const targetRotationY = sphereRotation.y + euler.y;
+            
+            const startRotationX = sphereRotation.x;
+            const startRotationY = sphereRotation.y;
+            const startTime = Date.now();
+            const animationDuration = 1200;
+            
+            function easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            }
+            
+            function animateCamera() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / animationDuration, 1);
+                const easedProgress = easeOutCubic(progress);
+                
+                sphereRotation.x = startRotationX + (targetRotationX - startRotationX) * easedProgress;
+                sphereRotation.y = startRotationY + (targetRotationY - startRotationY) * easedProgress;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateCamera);
+                } else {
+                    if (fromRelationClick) {
+                        showPoetInfo(targetPoet, true);
+                    }
+                }
+            }
+            
+            animateCamera();
+        }
+
+        function highlightStar(targetStar) {
+            const originalOpacity = targetStar.material.opacity;
+            let flashCount = 0;
+            const flashInterval = setInterval(() => {
+                targetStar.material.opacity = flashCount % 2 === 0 ? 1 : 0.5;
+                flashCount++;
+                if (flashCount >= 6) {
+                    clearInterval(flashInterval);
+                    targetStar.material.opacity = originalOpacity;
+                }
+            }, 100);
+            
+            const originalScale = targetStar.scale.x;
+            let scaleCount = 0;
+            const scaleInterval = setInterval(() => {
+                const scale = scaleCount % 2 === 0 ? originalScale * 1.5 : originalScale;
+                targetStar.scale.setScalar(scale);
+                scaleCount++;
+                if (scaleCount >= 6) {
+                    clearInterval(scaleInterval);
+                    targetStar.scale.setScalar(originalScale);
+                }
+            }, 100);
         }
 
         function animate() {
