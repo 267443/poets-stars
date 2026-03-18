@@ -358,6 +358,51 @@
             z-index: 100;
         }
         
+        .dynasty-tabs {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .dynasty-tab {
+            padding: 10px 30px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            background: rgba(18, 18, 31, 0.8);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.1em;
+        }
+        
+        .dynasty-tab:hover {
+            background: rgba(212, 168, 83, 0.1);
+            border-color: var(--accent-gold);
+        }
+        
+        .dynasty-tab.active {
+            color: var(--text-primary);
+            background: rgba(212, 168, 83, 0.2);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.3);
+        }
+        
+        .dynasty-tab.tang.active {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .dynasty-tab.song.active {
+            border-color: #4169e1;
+            box-shadow: 0 0 20px rgba(65, 105, 225, 0.3);
+        }
+        
         .legend-item {
             display: flex;
             align-items: center;
@@ -466,6 +511,11 @@
     <div class="ui-overlay title-bar">
         <h1>大唐诗人星图</h1>
         <p>TANG DYNASTY POETS · 星辰般的诗魂</p>
+    </div>
+    
+    <div class="dynasty-tabs">
+        <div class="dynasty-tab tang active" data-dynasty="tang" onclick="switchDynasty('tang')">唐朝星空</div>
+        <div class="dynasty-tab song" data-dynasty="song" onclick="switchDynasty('song')">宋朝星空</div>
     </div>
     
     <div class="poet-info-panel" id="poet-panel">
@@ -622,18 +672,83 @@
             { id: 150, name: "黄孝迈", era: "南宋", achievement: "词人", works: [{ name: "《湘春夜月》", fullText: "近清明，翠禽枝上消魂。\n可惜一片清歌，都付与黄昏。" }], fame: 4, relations: [] }
         ];
 
+        const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
+        
+        const tangPoets = poetsData.filter(p => !isSongDynasty(p.era));
+        const songPoets = poetsData.filter(p => isSongDynasty(p.era));
+
         let scene, camera, renderer;
-        let stars = [];
-        let starMeshes = [];
-        let lines = [];
+        let tangScene, songScene;
+        let tangStars = [], songStars = [];
+        let tangStarMeshes = [], songStarMeshes = [];
+        let tangLines = [], songLines = [];
+        let currentDynasty = 'tang';
         let raycaster, mouse;
         let selectedPoet = null;
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
         let sphereRotation = { x: 0, y: 0 };
 
+        function getCurrentScene() {
+            return currentDynasty === 'tang' ? tangScene : songScene;
+        }
+
+        function getCurrentStars() {
+            return currentDynasty === 'tang' ? tangStars : songStars;
+        }
+
+        function getCurrentStarMeshes() {
+            return currentDynasty === 'tang' ? tangStarMeshes : songStarMeshes;
+        }
+
+        function getCurrentLines() {
+            return currentDynasty === 'tang' ? tangLines : songLines;
+        }
+
+        function getCurrentPoetsData() {
+            return currentDynasty === 'tang' ? tangPoets : songPoets;
+        }
+
+        function switchDynasty(dynasty) {
+            currentDynasty = dynasty;
+            
+            document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.dynasty-tab.${dynasty}`).classList.add('active');
+            
+            const titleText = dynasty === 'tang' ? '大唐诗人星图' : '大宋词人星图';
+            const subtitleText = dynasty === 'tang' ? 'TANG DYNASTY POETS · 星辰般的诗魂' : 'SONG DYNASTY POETS · 词韵如星';
+            document.querySelector('.title-bar h1').textContent = titleText;
+            document.querySelector('.title-bar p').textContent = subtitleText;
+            
+            document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                item.classList.remove('active', 'inactive');
+                if (item.dataset.dynasty === dynasty) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('inactive');
+                }
+            });
+            
+            scene.visible = false;
+            if (dynasty === 'tang') {
+                tangScene.visible = true;
+                songScene.visible = false;
+                scene = tangScene;
+            } else {
+                tangScene.visible = false;
+                songScene.visible = true;
+                scene = songScene;
+            }
+            
+            filterStars();
+        }
+
         function init() {
             scene = new THREE.Scene();
+            tangScene = new THREE.Scene();
+            songScene = new THREE.Scene();
             
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 100;
@@ -647,19 +762,27 @@
             mouse = new THREE.Vector2();
 
             const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-            scene.add(ambientLight);
+            tangScene.add(ambientLight.clone());
+            songScene.add(ambientLight.clone());
 
-            createPoetStars();
+            createTangPoetStars();
+            createSongPoetStars();
             
             const poetIdToStar = {};
-            stars.forEach(star => {
+            tangStars.concat(songStars).forEach(star => {
                 if (star.userData && star.userData.poet && star.userData.poet.id) {
                     poetIdToStar[star.userData.poet.id] = star;
                 }
             });
             window.poetIdToStar = poetIdToStar;
             
-            createConnections();
+            createTangConnections();
+            createSongConnections();
+            
+            tangScene.visible = true;
+            songScene.visible = false;
+            scene = tangScene;
+            
             addEventListeners();
             
             setTimeout(() => {
@@ -669,19 +792,12 @@
             animate();
         }
 
-        function createPoetStars() {
+        function createTangPoetStars() {
             const fameColors = {
                 1: { color: 0xffffff, emissive: 0xffd700, intensity: 2.0 },
                 2: { color: 0xffd700, emissive: 0xffa500, intensity: 1.5 },
                 3: { color: 0xc0c0c0, emissive: 0x909090, intensity: 1.0 },
                 4: { color: 0x808080, emissive: 0x606060, intensity: 0.6 }
-            };
-            
-            const songColors = {
-                1: { color: 0xffffff, emissive: 0x4169e1, intensity: 2.0 },
-                2: { color: 0x6495ed, emissive: 0x1e90ff, intensity: 1.5 },
-                3: { color: 0x87ceeb, emissive: 0x4682b4, intensity: 1.0 },
-                4: { color: 0x708090, emissive: 0x4a6a8a, intensity: 0.6 }
             };
             
             const fameSizes = {
@@ -691,9 +807,9 @@
                 4: 1.0
             };
 
-            poetsData.forEach((poet, index) => {
-                const phi = Math.acos(-1 + (2 * index) / poetsData.length);
-                const theta = Math.sqrt(poetsData.length * Math.PI) * phi;
+            tangPoets.forEach((poet, index) => {
+                const phi = Math.acos(-1 + (2 * index) / tangPoets.length);
+                const theta = Math.sqrt(tangPoets.length * Math.PI) * phi;
                 
                 const radius = 40;
                 const x = radius * Math.sin(phi) * Math.cos(theta);
@@ -701,8 +817,7 @@
                 const z = radius * Math.cos(phi);
                 
                 const size = fameSizes[poet.fame];
-                const isSong = poet.era && (poet.era.includes('宋') || poet.era.includes('南唐') || poet.era.includes('明末清初'));
-                const colors = isSong ? songColors[poet.fame] : fameColors[poet.fame];
+                const colors = fameColors[poet.fame];
                 
                 const starGeometry = new THREE.CircleGeometry(size, 32);
                 const starMaterial = new THREE.MeshBasicMaterial({
@@ -741,33 +856,105 @@
                 outerGlow.lookAt(0, 0, 0);
                 outerGlow.userData = { poet: poet };
                 
-                stars.push(star);
-                starMeshes.push(star, glow, outerGlow);
-                scene.add(star);
-                scene.add(glow);
-                scene.add(outerGlow);
+                tangStars.push(star);
+                tangStarMeshes.push(star, glow, outerGlow);
+                tangScene.add(star);
+                tangScene.add(glow);
+                tangScene.add(outerGlow);
             });
         }
 
-        function createConnections() {
+        function createSongPoetStars() {
+            const songColors = {
+                1: { color: 0xffffff, emissive: 0x4169e1, intensity: 2.0 },
+                2: { color: 0x6495ed, emissive: 0x1e90ff, intensity: 1.5 },
+                3: { color: 0x87ceeb, emissive: 0x4682b4, intensity: 1.0 },
+                4: { color: 0x708090, emissive: 0x4a6a8a, intensity: 0.6 }
+            };
+            
+            const fameSizes = {
+                1: 2.2,
+                2: 1.8,
+                3: 1.4,
+                4: 1.0
+            };
+
+            songPoets.forEach((poet, index) => {
+                const phi = Math.acos(-1 + (2 * index) / songPoets.length);
+                const theta = Math.sqrt(songPoets.length * Math.PI) * phi;
+                
+                const radius = 40;
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+                
+                const size = fameSizes[poet.fame];
+                const colors = songColors[poet.fame];
+                
+                const starGeometry = new THREE.CircleGeometry(size, 32);
+                const starMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.color,
+                    transparent: true,
+                    opacity: 0.95,
+                    side: THREE.DoubleSide
+                });
+                
+                const star = new THREE.Mesh(starGeometry, starMaterial);
+                star.position.set(x, y, z);
+                star.lookAt(0, 0, 0);
+                star.userData = { poet: poet };
+                
+                const glowGeometry = new THREE.CircleGeometry(size * 2, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.emissive,
+                    transparent: true,
+                    opacity: 0.2,
+                    side: THREE.DoubleSide
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(x, y, z);
+                glow.lookAt(0, 0, 0);
+                glow.userData = { poet: poet };
+                
+                const outerGlowGeometry = new THREE.CircleGeometry(size * 3, 32);
+                const outerGlowMaterial = new THREE.MeshBasicMaterial({
+                    color: colors.emissive,
+                    transparent: true,
+                    opacity: 0.08,
+                    side: THREE.DoubleSide
+                });
+                const outerGlow = new THREE.Mesh(outerGlowGeometry, outerGlowMaterial);
+                outerGlow.position.set(x, y, z);
+                outerGlow.lookAt(0, 0, 0);
+                outerGlow.userData = { poet: poet };
+                
+                songStars.push(star);
+                songStarMeshes.push(star, glow, outerGlow);
+                songScene.add(star);
+                songScene.add(glow);
+                songScene.add(outerGlow);
+            });
+        }
+
+        function createTangConnections() {
             const relationStrengths = {
                 strong: { opacity: 0.7 },
                 medium: { opacity: 0.35 },
                 weak: { opacity: 0.12 }
             };
 
-            poetsData.forEach(poet => {
+            tangPoets.forEach(poet => {
                 poet.relations.forEach(relation => {
-                    const targetPoet = poetsData.find(p => p.name === relation.name);
+                    const targetPoet = tangPoets.find(p => p.name === relation.name);
                     if (targetPoet) {
-                        const sourceIndex = poetsData.indexOf(poet);
-                        const targetIndex = poetsData.indexOf(targetPoet);
+                        const sourceIndex = tangPoets.indexOf(poet);
+                        const targetIndex = tangPoets.indexOf(targetPoet);
                         
                         if (sourceIndex < targetIndex) {
-                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / poetsData.length);
-                            const sourceTheta = Math.sqrt(poetsData.length * Math.PI) * sourcePhi;
-                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / poetsData.length);
-                            const targetTheta = Math.sqrt(poetsData.length * Math.PI) * targetPhi;
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / tangPoets.length);
+                            const sourceTheta = Math.sqrt(tangPoets.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / tangPoets.length);
+                            const targetTheta = Math.sqrt(tangPoets.length * Math.PI) * targetPhi;
                             
                             const radius = 40;
                             const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
@@ -800,8 +987,67 @@
                                 type: relation.type
                             };
                             
-                            lines.push(line);
-                            scene.add(line);
+                            tangLines.push(line);
+                            tangScene.add(line);
+                        }
+                    }
+                });
+            });
+        }
+
+        function createSongConnections() {
+            const relationStrengths = {
+                strong: { opacity: 0.7 },
+                medium: { opacity: 0.35 },
+                weak: { opacity: 0.12 }
+            };
+
+            songPoets.forEach(poet => {
+                poet.relations.forEach(relation => {
+                    const targetPoet = songPoets.find(p => p.name === relation.name);
+                    if (targetPoet) {
+                        const sourceIndex = songPoets.indexOf(poet);
+                        const targetIndex = songPoets.indexOf(targetPoet);
+                        
+                        if (sourceIndex < targetIndex) {
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / songPoets.length);
+                            const sourceTheta = Math.sqrt(songPoets.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / songPoets.length);
+                            const targetTheta = Math.sqrt(songPoets.length * Math.PI) * targetPhi;
+                            
+                            const radius = 40;
+                            const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
+                            const sourceY = radius * Math.sin(sourcePhi) * Math.sin(sourceTheta);
+                            const sourceZ = radius * Math.cos(sourcePhi);
+                            
+                            const targetX = radius * Math.sin(targetPhi) * Math.cos(targetTheta);
+                            const targetY = radius * Math.sin(targetPhi) * Math.sin(targetTheta);
+                            const targetZ = radius * Math.cos(targetPhi);
+                            
+                            const points = [
+                                new THREE.Vector3(sourceX, sourceY, sourceZ),
+                                new THREE.Vector3(targetX, targetY, targetZ)
+                            ];
+                            
+                            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                            const opacity = relationStrengths[relation.strength].opacity;
+                            
+                            const material = new THREE.LineBasicMaterial({
+                                color: 0xffffff,
+                                transparent: true,
+                                opacity: opacity
+                            });
+                            
+                            const line = new THREE.Line(geometry, material);
+                            line.userData = { 
+                                source: poet.name, 
+                                target: relation.name, 
+                                strength: relation.strength,
+                                type: relation.type
+                            };
+                            
+                            songLines.push(line);
+                            songScene.add(line);
                         }
                     }
                 });
@@ -832,15 +1078,7 @@
                     item.classList.add('inactive');
                 }
                 item.addEventListener('click', () => {
-                    activeDynasties[dynasty] = !activeDynasties[dynasty];
-                    if (activeDynasties[dynasty]) {
-                        item.classList.add('active');
-                        item.classList.remove('inactive');
-                    } else {
-                        item.classList.add('inactive');
-                        item.classList.remove('active');
-                    }
-                    filterStars();
+                    switchDynasty(dynasty);
                 });
             });
             
@@ -866,32 +1104,32 @@
         }
         
         function filterStars() {
-            const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
-            
             function shouldShowPoet(poet) {
-                const era = poet.era;
-                const isSong = isSongDynasty(era);
-                const dynastyMatch = (isSong && activeDynasties.song) || (!isSong && activeDynasties.tang);
                 const fameMatch = activeFameLevels.includes(poet.fame);
-                return dynastyMatch && fameMatch;
+                return fameMatch;
             }
             
-            stars.forEach(star => {
+            const currentStars = getCurrentStars();
+            const currentStarMeshes = getCurrentStarMeshes();
+            const currentLines = getCurrentLines();
+            const currentPoetsData = getCurrentPoetsData();
+            
+            currentStars.forEach(star => {
                 if (star.userData && star.userData.poet) {
                     star.visible = shouldShowPoet(star.userData.poet);
                 }
             });
             
-            starMeshes.forEach(mesh => {
+            currentStarMeshes.forEach(mesh => {
                 if (mesh.userData && mesh.userData.poet) {
                     mesh.visible = shouldShowPoet(mesh.userData.poet);
                 }
             });
             
-            lines.forEach(line => {
+            currentLines.forEach(line => {
                 if (line.userData && line.userData.source && line.userData.target) {
-                    const sourcePoet = poetsData.find(p => p.name === line.userData.source);
-                    const targetPoet = poetsData.find(p => p.name === line.userData.target);
+                    const sourcePoet = currentPoetsData.find(p => p.name === line.userData.source);
+                    const targetPoet = currentPoetsData.find(p => p.name === line.userData.target);
                     if (sourcePoet && targetPoet) {
                         line.visible = shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet);
                     }
@@ -937,7 +1175,8 @@
             
             raycaster.setFromCamera(mouse, camera);
             
-            const intersects = raycaster.intersectObjects(starMeshes);
+            const currentStarMeshes = getCurrentStarMeshes();
+            const intersects = raycaster.intersectObjects(currentStarMeshes);
             
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
@@ -950,8 +1189,11 @@
         }
 
         function showPoetInfo(poet, skipCameraAnimation = false) {
+            const currentStars = getCurrentStars();
+            const currentPoetsData = getCurrentPoetsData();
+            
             if (!skipCameraAnimation) {
-                const targetStar = stars.find(star => star.userData.poet.id === poet.id);
+                const targetStar = currentStars.find(star => star.userData.poet.id === poet.id);
                 if (targetStar) {
                     const originalOpacity = targetStar.material.opacity;
                     let flashCount = 0;
@@ -996,7 +1238,7 @@
             
             if (poet.relations && poet.relations.length > 0) {
                 poet.relations.forEach(relation => {
-                    const relatedPoet = poetsData.find(p => p.name === relation.name);
+                    const relatedPoet = currentPoetsData.find(p => p.name === relation.name);
                     const hasStar = !!relatedPoet;
                     
                     const item = document.createElement('div');
@@ -1027,7 +1269,8 @@
             
             document.getElementById('poet-panel').classList.add('visible');
             
-            lines.forEach(line => {
+            const currentLines = getCurrentLines();
+            currentLines.forEach(line => {
                 const originalOpacity = line.material.opacity;
                 if (line.userData.source === poet.name || line.userData.target === poet.name) {
                     line.material.opacity = 1;
@@ -1078,59 +1321,59 @@
             const isTargetSong = targetPoet.era && (targetPoet.era.includes('宋') || targetPoet.era.includes('南唐') || targetPoet.era.includes('明末清初'));
             const targetDynasty = isTargetSong ? 'song' : 'tang';
             
-            if (!activeDynasties[targetDynasty]) {
-                activeDynasties[targetDynasty] = true;
-                const dynastyItem = document.querySelector(`.legend-item.dynasty-filter[data-dynasty="${targetDynasty}"]`);
-                if (dynastyItem) {
-                    dynastyItem.classList.add('active');
-                    dynastyItem.classList.remove('inactive');
+            if (currentDynasty !== targetDynasty) {
+                switchDynasty(targetDynasty);
+            }
+            
+            setTimeout(() => {
+                const currentStars = getCurrentStars();
+                const currentTargetStar = currentStars.find(star => star.userData.poet.id === poetId);
+                if (!currentTargetStar) return;
+                
+                const starPosition = new THREE.Vector3();
+                currentTargetStar.getWorldPosition(starPosition);
+                
+                const targetDir = starPosition.clone().normalize();
+                const cameraDir = new THREE.Vector3(0, 0, 1);
+                
+                const quaternion = new THREE.Quaternion();
+                quaternion.setFromUnitVectors(targetDir, cameraDir);
+                
+                const euler = new THREE.Euler();
+                euler.setFromQuaternion(quaternion);
+                
+                const targetRotationX = sphereRotation.x + euler.x;
+                const targetRotationY = sphereRotation.y + euler.y;
+                
+                const startRotationX = sphereRotation.x;
+                const startRotationY = sphereRotation.y;
+                const startTime = Date.now();
+                const animationDuration = 1200;
+                
+                function easeOutCubic(t) {
+                    return 1 - Math.pow(1 - t, 3);
                 }
-                filterStars();
-            }
-            
-            const starPosition = new THREE.Vector3();
-            targetStar.getWorldPosition(starPosition);
-            
-            const targetDir = starPosition.clone().normalize();
-            const cameraDir = new THREE.Vector3(0, 0, 1);
-            
-            const quaternion = new THREE.Quaternion();
-            quaternion.setFromUnitVectors(targetDir, cameraDir);
-            
-            const euler = new THREE.Euler();
-            euler.setFromQuaternion(quaternion);
-            
-            const targetRotationX = sphereRotation.x + euler.x;
-            const targetRotationY = sphereRotation.y + euler.y;
-            
-            const startRotationX = sphereRotation.x;
-            const startRotationY = sphereRotation.y;
-            const startTime = Date.now();
-            const animationDuration = 1200;
-            
-            function easeOutCubic(t) {
-                return 1 - Math.pow(1 - t, 3);
-            }
-            
-            function animateCamera() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / animationDuration, 1);
-                const easedProgress = easeOutCubic(progress);
                 
-                sphereRotation.x = startRotationX + (targetRotationX - startRotationX) * easedProgress;
-                sphereRotation.y = startRotationY + (targetRotationY - startRotationY) * easedProgress;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animateCamera);
-                } else {
-                    highlightStar(targetStar);
-                    if (fromRelationClick) {
-                        showPoetInfo(targetPoet, true);
+                function animateCamera() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / animationDuration, 1);
+                    const easedProgress = easeOutCubic(progress);
+                    
+                    sphereRotation.x = startRotationX + (targetRotationX - startRotationX) * easedProgress;
+                    sphereRotation.y = startRotationY + (targetRotationY - startRotationY) * easedProgress;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateCamera);
+                    } else {
+                        highlightStar(currentTargetStar);
+                        if (fromRelationClick) {
+                            showPoetInfo(targetPoet, true);
+                        }
                     }
                 }
-            }
-            
-            animateCamera();
+                
+                animateCamera();
+            }, 100);
         }
 
         function highlightStar(targetStar) {
@@ -1164,7 +1407,8 @@
             scene.rotation.x = sphereRotation.x;
             scene.rotation.y = sphereRotation.y;
             
-            stars.forEach((star, index) => {
+            const currentStars = getCurrentStars();
+            currentStars.forEach((star, index) => {
                 const poet = star.userData.poet;
                 const speed = poet.fame === 1 ? 0.004 : poet.fame === 2 ? 0.003 : poet.fame === 3 ? 0.002 : 0.001;
                 const scale = poet.fame === 1 ? 0.3 : poet.fame === 2 ? 0.2 : poet.fame === 3 ? 0.15 : 0.1;
