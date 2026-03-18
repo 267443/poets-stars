@@ -1010,19 +1010,24 @@
             createSongGeneralStars();
             
             const poetIdToStar = {};
-            tangStars.concat(songStars).forEach(star => {
+            tangStars.forEach(star => {
                 if (star.userData && star.userData.poet && star.userData.poet.id) {
-                    poetIdToStar[star.userData.poet.id] = star;
+                    poetIdToStar['tang_poet_' + star.userData.poet.id] = star;
+                }
+            });
+            songStars.forEach(star => {
+                if (star.userData && star.userData.poet && star.userData.poet.id) {
+                    poetIdToStar['song_poet_' + star.userData.poet.id] = star;
                 }
             });
             generalStars.forEach(star => {
                 if (star.userData && star.userData.general && star.userData.general.id) {
-                    poetIdToStar[star.userData.general.id] = star;
+                    poetIdToStar['tang_general_' + star.userData.general.id] = star;
                 }
             });
             songGeneralStars.forEach(star => {
                 if (star.userData && star.userData.general && star.userData.general.id) {
-                    poetIdToStar[star.userData.general.id] = star;
+                    poetIdToStar['song_general_' + star.userData.general.id] = star;
                 }
             });
             window.poetIdToStar = poetIdToStar;
@@ -1951,7 +1956,16 @@
         }
 
         function navigateToPoet(poetId, fromRelationClick = false) {
-            const targetStar = window.poetIdToStar[poetId];
+            let prefix = '';
+            if (currentCategory === 'general') {
+                prefix = 'tang_general_';
+            } else if (currentCategory === 'song-general') {
+                prefix = 'song_general_';
+            } else if (currentCategory === 'poet') {
+                prefix = currentDynasty === 'song' ? 'song_poet_' : 'tang_poet_';
+            }
+            const key = prefix + poetId;
+            const targetStar = window.poetIdToStar[key];
             if (!targetStar) {
                 return;
             }
@@ -1960,9 +1974,11 @@
             let targetGeneral = null;
             let targetDynasty = '';
             let isTargetGeneral = false;
+            let isTargetPoet = false;
             
             if (targetStar.userData && targetStar.userData.poet) {
                 targetPoet = targetStar.userData.poet;
+                isTargetPoet = true;
                 const isTargetSong = targetPoet.era && (targetPoet.era.includes('宋') || targetPoet.era.includes('南唐') || targetPoet.era.includes('明末清初'));
                 targetDynasty = isTargetSong ? 'song' : 'tang';
             } else if (targetStar.userData && targetStar.userData.general) {
@@ -1971,16 +1987,21 @@
                 targetDynasty = targetStar.userData.type === 'song-general' ? 'song-general' : 'general';
             }
             
-            if (isTargetGeneral) {
-                if (currentDynasty !== 'general' && currentDynasty !== 'song-general') {
-                    switchDynasty(targetDynasty);
-                } else if (currentDynasty !== targetDynasty) {
-                    switchDynasty(targetDynasty);
-                }
-            } else {
+            const currentIsGeneral = currentCategory === 'general' || currentCategory === 'song-general';
+            const currentIsPoet = currentCategory === 'poet';
+            
+            if (isTargetGeneral && currentIsGeneral) {
                 if (currentDynasty !== targetDynasty) {
                     switchDynasty(targetDynasty);
                 }
+            } else if (isTargetPoet && currentIsPoet) {
+                if (currentDynasty !== targetDynasty) {
+                    switchDynasty(targetDynasty);
+                }
+            } else if (isTargetGeneral && currentIsPoet) {
+                return;
+            } else if (isTargetPoet && currentIsGeneral) {
+                return;
             }
             
             setTimeout(() => {
