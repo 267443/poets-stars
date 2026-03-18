@@ -408,6 +408,11 @@
             box-shadow: 0 0 20px rgba(220, 20, 60, 0.4);
         }
         
+        .dynasty-tab.song-general.active {
+            border-color: #1e3a5f;
+            box-shadow: 0 0 20px rgba(30, 58, 95, 0.6);
+        }
+        
         .legend-item {
             display: flex;
             align-items: center;
@@ -531,6 +536,7 @@
         <div class="dynasty-tab tang active" data-dynasty="tang" onclick="switchDynasty('tang')">唐朝星空</div>
         <div class="dynasty-tab song" data-dynasty="song" onclick="switchDynasty('song')">宋朝星空</div>
         <div class="dynasty-tab general" data-dynasty="general" onclick="switchDynasty('general')">唐朝将星</div>
+        <div class="dynasty-tab song-general" data-dynasty="song-general" onclick="switchDynasty('song-general')">宋朝将星</div>
     </div>
     
     <div class="poet-info-panel" id="poet-panel">
@@ -746,20 +752,80 @@
             { id: 1052, name: "唐重", era: "宋朝", achievement: "抗金名臣", works: [], fame: 3, relations: [] },
             { id: 1053, name: "张叔夜", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
             { id: 1054, name: "种师道", era: "宋朝", achievement: "抗金名将", works: [], fame: 2, relations: [] },
-            { id: 1055, name: "种师中", era: "宋朝", achievement: "抗金名将", works: [], fame: 3, relations: [{ name: "种师道", type: "亲属", strength: "strong" }] }
+            { id: 1055, name: "种师中", era: "宋朝", achievement: "抗金名将", works: [], fame: 3, relations: [{ name: "种师道", type: "亲属", strength: "strong" }] },
+            { id: 1056, name: "赵鼎", era: "宋朝", achievement: "南宋名臣", works: [], fame: 3, relations: [] },
+            { id: 1057, name: "李光", era: "宋朝", achievement: "抗金名臣", works: [], fame: 3, relations: [] },
+            { id: 1058, name: "胡安国", era: "宋朝", achievement: "经学家", works: [], fame: 4, relations: [] },
+            { id: 1059, name: "吕颐浩", era: "宋朝", achievement: "宰相", works: [], fame: 3, relations: [] },
+            { id: 1060, name: "朱胜非", era: "宋朝", achievement: "宰相", works: [], fame: 3, relations: [] },
+            { id: 1061, name: "王绚", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1062, name: "陈规", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1063, name: "赵开", era: "宋朝", achievement: "理财名臣", works: [], fame: 3, relations: [] },
+            { id: 1064, name: "陈洪进", era: "宋朝", achievement: "节度使", works: [], fame: 3, relations: [] },
+            { id: 1065, name: "钱镠", era: "宋朝", achievement: "吴越国王", works: [], fame: 2, relations: [] },
+            { id: 1066, name: "钱俶", era: "宋朝", achievement: "吴越末王", works: [], fame: 3, relations: [] },
+            { id: 1067, name: "李煜", era: "宋朝", achievement: "南唐后主", works: [], fame: 2, relations: [] },
+            { id: 1068, name: "赵德昭", era: "宋朝", achievement: "魏王", works: [], fame: 3, relations: [] },
+            { id: 1069, name: "赵德芳", era: "宋朝", achievement: "秦王", works: [], fame: 3, relations: [] },
+            { id: 1070, name: "呼延赞", era: "宋朝", achievement: "开国将领", works: [], fame: 3, relations: [] },
+            { id: 1071, name: "刘光世", era: "宋朝", achievement: "中兴名将", works: [], fame: 2, relations: [] },
+            { id: 1072, name: "杨沂中", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1073, name: "田字", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1074, name: "王燮", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1075, name: "巨师古", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1076, name: "徐文", era: "宋朝", achievement: "水军将领", works: [], fame: 3, relations: [] },
+            { id: 1077, name: "范琼", era: "宋朝", achievement: "禁军将领", works: [], fame: 3, relations: [] },
+            { id: 1078, name: "王善", era: "宋朝", achievement: "义军首领", works: [], fame: 3, relations: [] },
+            { id: 1079, name: "丁进", era: "宋朝", achievement: "义军首领", works: [], fame: 3, relations: [] },
+            { id: 1080, name: "杨么", era: "宋朝", achievement: "义军首领", works: [], fame: 3, relations: [] },
+            { id: 1081, name: "曹成", era: "宋朝", achievement: "义军首领", works: [], fame: 3, relations: [] },
+            { id: 1082, name: "桑仲", era: "宋朝", achievement: "义军首领", works: [], fame: 3, relations: [] },
+            { id: 1083, name: "李横", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1084, name: "董先", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1085, name: "徐庆", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1086, name: "傅庆", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1087, name: "王贵", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1088, name: "姚政", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1089, name: "庞荣", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1090, name: "王万", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1091, name: "杜湛", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1092, name: "黄纵", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1093, name: "任士安", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1094, name: "翟宗", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1095, name: "李宝", era: "宋朝", achievement: "水军名将", works: [], fame: 3, relations: [] },
+            { id: 1096, name: "苏动", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1097, name: "万俟卨", era: "宋朝", achievement: "奸臣", works: [], fame: 3, relations: [] },
+            { id: 1098, name: "张俊", era: "宋朝", achievement: "中兴将领", works: [], fame: 2, relations: [] },
+            { id: 1099, name: "王彦", era: "宋朝", achievement: "八字军首领", works: [], fame: 2, relations: [] },
+            { id: 1100, name: "高宠", era: "宋朝", achievement: "抗金名将", works: [], fame: 2, relations: [] },
+            { id: 1101, name: "杨再兴", era: "宋朝", achievement: "岳飞部将", works: [], fame: 2, relations: [{ name: "岳飞", type: "上下级", strength: "strong" }] },
+            { id: 1102, name: "罗延庆", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1103, name: "严成方", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1104, name: "何元庆", era: "宋朝", achievement: "岳飞部将", works: [], fame: 3, relations: [] },
+            { id: 1105, name: "高二", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1106, name: "邢敦", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1107, name: "王捷", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1108, name: "雷在中", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1109, name: "赵鼎臣", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1110, name: "葛王", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1111, name: "孙晖", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1112, name: "王大节", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1113, name: "田押", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] },
+            { id: 1114, name: "罗盏", era: "宋朝", achievement: "抗金将领", works: [], fame: 3, relations: [] }
         ];
 
         const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
         
         const tangPoets = poetsData.filter(p => !isSongDynasty(p.era));
         const songPoets = poetsData.filter(p => isSongDynasty(p.era));
-        const tangGenerals = generalsData.filter(g => g.era === '唐朝' || g.era === '宋朝' || g.era === '后周');
+        const tangGenerals = generalsData.filter(g => g.era === '唐朝');
+        const songGenerals = generalsData.filter(g => g.era === '宋朝');
 
         let scene, camera, renderer;
-        let tangScene, songScene, generalScene;
-        let tangStars = [], songStars = [], generalStars = [];
-        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [];
-        let tangLines = [], songLines = [], generalLines = [];
+        let tangScene, songScene, generalScene, songGeneralScene;
+        let tangStars = [], songStars = [], generalStars = [], songGeneralStars = [];
+        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [], songGeneralStarMeshes = [];
+        let tangLines = [], songLines = [], generalLines = [], songGeneralLines = [];
         let currentDynasty = 'tang';
         let currentCategory = 'poet';
         let showPoets = true;
@@ -772,26 +838,31 @@
 
         function getCurrentScene() {
             if (currentCategory === 'general') return generalScene;
+            if (currentCategory === 'song-general') return songGeneralScene;
             return currentDynasty === 'tang' ? tangScene : songScene;
         }
 
         function getCurrentStars() {
             if (currentCategory === 'general') return generalStars;
+            if (currentCategory === 'song-general') return songGeneralStars;
             return currentDynasty === 'tang' ? tangStars : songStars;
         }
 
         function getCurrentStarMeshes() {
             if (currentCategory === 'general') return generalStarMeshes;
+            if (currentCategory === 'song-general') return songGeneralStarMeshes;
             return currentDynasty === 'tang' ? tangStarMeshes : songStarMeshes;
         }
         
         function getCurrentLines() {
             if (currentCategory === 'general') return generalLines;
+            if (currentCategory === 'song-general') return songGeneralLines;
             return currentDynasty === 'tang' ? tangLines : songLines;
         }
 
         function getCurrentPoetsData() {
             if (currentCategory === 'general') return tangGenerals;
+            if (currentCategory === 'song-general') return songGenerals;
             return currentDynasty === 'tang' ? tangPoets : songPoets;
         }
 
@@ -808,6 +879,10 @@
                 currentCategory = 'general';
                 titleText = '唐朝将星星空';
                 subtitleText = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+            } else if (dynasty === 'song-general') {
+                currentCategory = 'song-general';
+                titleText = '宋朝将星星空';
+                subtitleText = 'SONG DYNASTY GENERALS · 星辰般的战魂';
             } else {
                 currentCategory = 'poet';
                 titleText = dynasty === 'tang' ? '大唐诗人星图' : '大宋词人星图';
@@ -818,14 +893,20 @@
             
             document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
                 item.classList.remove('active', 'inactive');
-                if (item.dataset.dynasty === dynasty || dynasty === 'general') {
-                    if (dynasty === 'general') {
-                        item.classList.add('inactive');
-                    } else if (item.dataset.dynasty === dynasty) {
+                if (dynasty === 'tang') {
+                    if (item.dataset.dynasty === 'tang') {
                         item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
                     }
-                } else {
-                    item.classList.add('inactive');
+                } else if (dynasty === 'song') {
+                    if (item.dataset.dynasty === 'song') {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                } else if (dynasty === 'general' || dynasty === 'song-general') {
+                    // 将星视图下保持所有朝代筛选状态不变
                 }
             });
             
@@ -833,6 +914,7 @@
             tangScene.visible = false;
             songScene.visible = false;
             generalScene.visible = false;
+            songGeneralScene.visible = false;
             
             if (dynasty === 'tang') {
                 tangScene.visible = showPoets;
@@ -843,6 +925,9 @@
             } else if (dynasty === 'general') {
                 generalScene.visible = showGenerals;
                 scene = generalScene;
+            } else if (dynasty === 'song-general') {
+                songGeneralScene.visible = showGenerals;
+                scene = songGeneralScene;
             }
             
             filterStars();
@@ -853,6 +938,7 @@
             tangScene = new THREE.Scene();
             songScene = new THREE.Scene();
             generalScene = new THREE.Scene();
+            songGeneralScene = new THREE.Scene();
             
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 100;
@@ -869,10 +955,12 @@
             tangScene.add(ambientLight.clone());
             songScene.add(ambientLight.clone());
             generalScene.add(ambientLight.clone());
+            songGeneralScene.add(ambientLight.clone());
 
             createTangPoetStars();
             createSongPoetStars();
             createGeneralStars();
+            createSongGeneralStars();
             
             const poetIdToStar = {};
             tangStars.concat(songStars).forEach(star => {
@@ -885,15 +973,22 @@
                     poetIdToStar[star.userData.general.id] = star;
                 }
             });
+            songGeneralStars.forEach(star => {
+                if (star.userData && star.userData.general && star.userData.general.id) {
+                    poetIdToStar[star.userData.general.id] = star;
+                }
+            });
             window.poetIdToStar = poetIdToStar;
             
             createTangConnections();
             createSongConnections();
             createGeneralConnections();
+            createSongGeneralConnections();
             
             tangScene.visible = true;
             songScene.visible = false;
             generalScene.visible = false;
+            songGeneralScene.visible = false;
             scene = tangScene;
             
             addEventListeners();
@@ -1278,6 +1373,117 @@
             });
         }
 
+        function createSongGeneralStars() {
+            const songGeneralColors = {
+                1: { main: 0x1e3a5f, glow: 0x2e5a8f },
+                2: { main: 0x2a4a7f, glow: 0x3a6aaf },
+                3: { main: 0x3a5a9f, glow: 0x4a7abf },
+                4: { main: 0x4a6aaf, glow: 0x5a8acf }
+            };
+            
+            const fameSizes = {
+                1: 2.2,
+                2: 1.6,
+                3: 1.1,
+                4: 0.7
+            };
+            
+            songGenerals.forEach((general, index) => {
+                const phi = Math.acos(-1 + (2 * index) / songGenerals.length);
+                const theta = Math.sqrt(songGenerals.length * Math.PI) * phi;
+                
+                const radius = 40;
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+                
+                const geometry = new THREE.SphereGeometry(fameSizes[general.fame], 32, 32);
+                const material = new THREE.MeshStandardMaterial({
+                    color: songGeneralColors[general.fame].main,
+                    emissive: songGeneralColors[general.fame].glow,
+                    emissiveIntensity: 0.5
+                });
+                
+                const star = new THREE.Mesh(geometry, material);
+                star.position.set(x, y, z);
+                star.userData = { general: general, type: 'song-general' };
+                
+                songGeneralStars.push(star);
+                songGeneralScene.add(star);
+                
+                const glowGeometry = new THREE.SphereGeometry(fameSizes[general.fame] * 1.5, 32, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: songGeneralColors[general.fame].glow,
+                    transparent: true,
+                    opacity: 0.15
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(x, y, z);
+                songGeneralScene.add(glow);
+                
+                songGeneralStarMeshes.push(star);
+            });
+        }
+
+        function createSongGeneralConnections() {
+            const relationStrengths = {
+                strong: { opacity: 0.7 },
+                medium: { opacity: 0.35 },
+                weak: { opacity: 0.12 }
+            };
+
+            songGenerals.forEach(general => {
+                general.relations.forEach(relation => {
+                    const targetGeneral = songGenerals.find(g => g.name === relation.name);
+                    if (targetGeneral) {
+                        const sourceIndex = songGenerals.indexOf(general);
+                        const targetIndex = songGenerals.indexOf(targetGeneral);
+                        
+                        if (sourceIndex < targetIndex) {
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / songGenerals.length);
+                            const sourceTheta = Math.sqrt(songGenerals.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / songGenerals.length);
+                            const targetTheta = Math.sqrt(songGenerals.length * Math.PI) * targetPhi;
+                            
+                            const radius = 40;
+                            const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
+                            const sourceY = radius * Math.sin(sourcePhi) * Math.sin(sourceTheta);
+                            const sourceZ = radius * Math.cos(sourcePhi);
+                            
+                            const targetX = radius * Math.sin(targetPhi) * Math.cos(targetTheta);
+                            const targetY = radius * Math.sin(targetPhi) * Math.sin(targetTheta);
+                            const targetZ = radius * Math.cos(targetPhi);
+                            
+                            const points = [
+                                new THREE.Vector3(sourceX, sourceY, sourceZ),
+                                new THREE.Vector3(targetX, targetY, targetZ)
+                            ];
+                            
+                            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                            const opacity = relationStrengths[relation.strength].opacity;
+                            
+                            const material = new THREE.LineBasicMaterial({
+                                color: 0x1e3a5f,
+                                transparent: true,
+                                opacity: opacity
+                            });
+                            
+                            const line = new THREE.Line(geometry, material);
+                            line.userData = { 
+                                source: general.name, 
+                                target: relation.name, 
+                                strength: relation.strength,
+                                type: 'song-general'
+                            };
+                            
+                            songGeneralLines.push(line);
+                            songGeneralScene.add(line);
+                        }
+                    }
+                });
+            });
+        }
+
         function addEventListeners() {
             window.addEventListener('resize', onWindowResize);
             renderer.domElement.addEventListener('mousedown', onMouseDown);
@@ -1372,6 +1578,7 @@
             tangScene.visible = showPoets;
             songScene.visible = showPoets;
             generalScene.visible = showGenerals;
+            songGeneralScene.visible = showGenerals;
             
             if (!showPoets && showGenerals) {
                 currentCategory = 'general';
@@ -1385,7 +1592,7 @@
                 document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
             } else if (showPoets && !showGenerals) {
                 currentCategory = 'poet';
-                if (currentDynasty === 'general') {
+                if (currentDynasty === 'general' || currentDynasty === 'song-general') {
                     currentDynasty = 'tang';
                 }
                 scene = currentDynasty === 'tang' ? tangScene : songScene;
@@ -1415,6 +1622,17 @@
                         document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
                     }
                     scene = generalScene;
+                } else if (currentCategory === 'song-general') {
+                    if (currentDynasty !== 'song-general') {
+                        currentDynasty = 'song-general';
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
+                    }
+                    scene = songGeneralScene;
                 } else {
                     if (currentDynasty === 'general') {
                         currentDynasty = 'tang';
@@ -1424,6 +1642,14 @@
                         document.querySelector('.dynasty-tab.tang').classList.add('active');
                         document.querySelector('.title-bar h1').textContent = '大唐诗人星图';
                         document.querySelector('.title-bar p').textContent = 'TANG DYNASTY POETS · 星辰般的诗魂';
+                    } else if (currentDynasty === 'song-general') {
+                        currentDynasty = 'song';
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.song').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '大宋词人星图';
+                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY POETS · 词韵如星';
                     }
                     scene = currentDynasty === 'tang' ? tangScene : songScene;
                 }
@@ -1471,6 +1697,12 @@
                     } else if (currentCategory === 'general') {
                         const sourceGeneral = tangGenerals.find(g => g.name === line.userData.source);
                         const targetGeneral = tangGenerals.find(g => g.name === line.userData.target);
+                        if (sourceGeneral && targetGeneral) {
+                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
+                        }
+                    } else if (currentCategory === 'song-general') {
+                        const sourceGeneral = songGenerals.find(g => g.name === line.userData.source);
+                        const targetGeneral = songGenerals.find(g => g.name === line.userData.target);
                         if (sourceGeneral && targetGeneral) {
                             line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
                         }
@@ -1632,7 +1864,7 @@
             const currentLines = getCurrentLines();
             currentLines.forEach(line => {
                 const originalOpacity = line.material.opacity;
-                if (line.userData.source === poet.name || line.userData.target === poet.name) {
+                if (line.userData.source === poetOrGeneral.name || line.userData.target === poetOrGeneral.name) {
                     line.material.opacity = 1;
                     setTimeout(() => {
                         line.material.opacity = originalOpacity;
@@ -1689,12 +1921,14 @@
             } else if (targetStar.userData && targetStar.userData.general) {
                 targetGeneral = targetStar.userData.general;
                 isTargetGeneral = true;
-                targetDynasty = 'general';
+                targetDynasty = targetStar.userData.type === 'song-general' ? 'song-general' : 'general';
             }
             
             if (isTargetGeneral) {
-                if (currentDynasty !== 'general') {
-                    switchDynasty('general');
+                if (currentDynasty !== 'general' && currentDynasty !== 'song-general') {
+                    switchDynasty(targetDynasty);
+                } else if (currentDynasty !== targetDynasty) {
+                    switchDynasty(targetDynasty);
                 }
             } else {
                 if (currentDynasty !== targetDynasty) {
