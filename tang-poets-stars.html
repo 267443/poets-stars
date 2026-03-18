@@ -391,6 +391,23 @@
         .legend-dot.fame-3 { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
         .legend-dot.fame-4 { background: #808080; box-shadow: 0 0 5px #808080; }
         
+        .legend-section-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+        
+        .legend-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+        }
+        
+        .dynasty-dot.tang-dot { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
+        .dynasty-dot.song-dot { background: #4169e1; box-shadow: 0 0 12px #4169e1; }
+        
         .legend-item.inactive .legend-dot {
             box-shadow: none;
             opacity: 0.3;
@@ -478,6 +495,11 @@
     </div>
     
     <div class="legend">
+        <div class="legend-section-title">朝代筛选</div>
+        <div class="legend-item dynasty-filter active" data-dynasty="tang"><div class="legend-dot dynasty-dot tang-dot"></div>唐朝</div>
+        <div class="legend-item dynasty-filter active" data-dynasty="song"><div class="legend-dot dynasty-dot song-dot"></div>宋朝</div>
+        <div class="legend-divider"></div>
+        <div class="legend-section-title">诗人级别</div>
         <div class="legend-item" data-fame="1"><div class="legend-dot fame-1"></div>诗仙/诗圣</div>
         <div class="legend-item" data-fame="2"><div class="legend-dot fame-2"></div>名家</div>
         <div class="legend-item" data-fame="3"><div class="legend-dot fame-3"></div>重要诗人</div>
@@ -547,7 +569,57 @@
             { id: 49, name: "杜秋娘", era: "晚唐", achievement: "", works: [{ name: "《金缕衣》", fullText: "劝君莫惜金缕衣，劝君惜取少年时。\n花开堪折直须折，莫待无花空折枝。" }], fame: 4, relations: [] },
             { id: 50, name: "聂夷中", era: "晚唐", achievement: "", works: [{ name: "《伤田家》", fullText: "二月卖新丝，五月粜新谷。\n医得眼前疮，剜却心头肉。\n我愿君王心，化作光明烛。\n不照绮罗筵，只照逃亡屋。" }], fame: 4, relations: [] },
             { id: 51, name: "秦韬玉", era: "晚唐", achievement: "", works: [{ name: "《贫女》", fullText: "蓬门未识绮罗香，拟托良媒益自伤。\n谁爱风流高格调，共怜时世俭梳妆。\n敢将十指夸针巧，不把双眉斗画长。\n苦恨年年压金线，为他人作嫁衣裳。" }], fame: 4, relations: [] },
-            { id: 52, name: "来鹏", era: "晚唐", achievement: "", works: [{ name: "《偶题》", fullText: "一种蛾眉明月夜，南宫歌吹北宫愁。\n刘生首任轻千金，烈士由来轻死生。" }], fame: 4, relations: [] }
+            { id: 52, name: "来鹏", era: "晚唐", achievement: "", works: [{ name: "《偶题》", fullText: "一种蛾眉明月夜，南宫歌吹北宫愁。\n刘生首任轻千金，烈士由来轻死生。" }], fame: 4, relations: [] },
+            { id: 101, name: "苏轼", era: "北宋", achievement: "文豪", works: [{ name: "《水调歌头》", fullText: "明月几时有，把酒问青天。\n不知天上宫阙，今夕是何年。\n我欲乘风归去，又恐琼楼玉宇，高处不胜寒。\n起舞弄清影，何似在人间。\n转朱阁，低绮户，照无眠。\n不应有恨，何事长向别时圆。\n人有悲欢离合，月有阴晴圆缺，此事古难全。\n但愿人长久，千里共婵娟。" }, { name: "《赤壁赋》", fullText: "壬戌之秋，七月既望，苏子与客泛舟游于赤壁之下。清风徐来，水波不兴。\n纵一苇之所如，凌万顷之茫然。浩浩乎如冯虚御风，而不知其所止；飘飘乎如遗世独立，羽化而登仙。" }], fame: 1, relations: [{ name: "王安石", type: "文坛同事", strength: "medium" }, { name: "黄庭坚", type: "挚友", strength: "strong" }, { name: "秦观", type: "挚友", strength: "strong" }, { name: "李白", type: "崇敬", strength: "weak" }] },
+            { id: 102, name: "王安石", era: "北宋", achievement: "改革家", works: [{ name: "《泊船瓜洲》", fullText: "京口瓜洲一水间，钟山只隔数重山。\n春风又绿江南岸，明月何时照我还。" }, { name: "《元日》", fullText: "爆竹声中一岁除，春风送暖入屠苏。\n千门万户曈曈日，总把新桃换旧符。" }], fame: 2, relations: [{ name: "苏轼", type: "政敌", strength: "weak" }, { name: "欧阳修", type: "师友", strength: "medium" }] },
+            { id: 103, name: "欧阳修", era: "北宋", achievement: "文坛领袖", works: [{ name: "《醉翁亭记》", fullText: "环滁州皆山。其西南诸峰，林壑尤美，望之蔚然而深秀者，琅琊也。\n山行六七里，渐闻水声潺潺而泻出于两峰之间者，酿泉也。\n峰回路转，有亭翼然临于泉上者，醉翁亭也。" }, { name: "《生查子》", fullText: "去年元夜时，花市灯如昼。\n月上柳梢头，人约黄昏后。\n今年元夜时，月与灯依旧。\n不见去年人，泪湿春衫袖。" }], fame: 2, relations: [{ name: "苏轼", type: "师友", strength: "strong" }, { name: "王安石", type: "政敌", strength: "weak" }, { name: "梅尧臣", type: "挚友", strength: "strong" }] },
+            { id: 104, name: "柳永", era: "北宋", achievement: "词圣", works: [{ name: "《雨霖铃》", fullText: "寒蝉凄切，对长亭晚，骤雨初歇。\n都门帐饮无绪，留恋处，兰舟催发。\n执手相看泪眼，竟无语凝噎。\n念去去，千里烟波，暮霭沉沉楚天阔。\n多情自古伤离别，更那堪，冷落清秋节！\n今宵酒醒何处？杨柳岸，晓风残月。\n此去经年，应是良辰好景虚设。\n便纵有千种风情，更与何人说？" }], fame: 2, relations: [{ name: "晏殊", type: "文坛同事", strength: "medium" }] },
+            { id: 105, name: "晏殊", era: "北宋", achievement: "太平宰相", works: [{ name: "《浣溪沙》", fullText: "一曲新词酒一杯，去年天气旧亭台。\n夕阳西下几时回？\n无可奈何花落去，似曾相识燕归来。\n小园香径独徘徊。" }], fame: 3, relations: [{ name: "柳永", type: "文坛同事", strength: "medium" }, { name: "欧阳修", type: "师友", strength: "medium" }] },
+            { id: 106, name: "范仲淹", era: "北宋", achievement: "政治家", works: [{ name: "《岳阳楼记》", fullText: "至若春和景明，波澜不惊，上下天光，一碧万顷；沙鸥翔集，锦鳞游泳；岸芷汀兰，郁郁青青。\n而或长烟一空，皓月千里，浮光跃金，静影沉璧，渔歌互答，此乐何极！" }, { name: "《渔家傲》", fullText: "塞下秋来风景异，衡阳雁去无留意。\n四面边声连角起，千嶂里，长烟落日孤城闭。\n浊酒一杯家万里，燕然未勒归无计。\n羌管悠悠霜满地，人不寐，将军白发征夫泪。" }], fame: 2, relations: [] },
+            { id: 107, name: "晏几道", era: "北宋", achievement: "词人", works: [{ name: "《临江仙》", fullText: "梦后楼台高锁，酒醒帘幕低垂。\n去年春恨却来时，落花人独立，微雨燕双飞。\n记得小蘋初见，两重心字罗衣。\n琵琶弦上说相思，当时明月在，曾照彩云归。" }], fame: 3, relations: [{ name: "晏殊", type: "亲属", strength: "strong" }] },
+            { id: 108, name: "黄庭坚", era: "北宋", achievement: "江西诗派", works: [{ name: "《寄黄几复》", fullText: "我居北海君南海，寄雁传书谢不能。\n桃李春风一杯酒，江湖夜雨十年灯。\n持家但有四立壁，治病不蕲三折肱。\n想见读书头已白，隔溪猿哭瘴溪藤。" }], fame: 2, relations: [{ name: "苏轼", type: "挚友", strength: "strong" }, { name: "秦观", type: "挚友", strength: "strong" }] },
+            { id: 109, name: "秦观", era: "北宋", achievement: "词人", works: [{ name: "《鹊桥仙》", fullText: "纤云弄巧，飞星传恨，银汉迢迢暗度。\n金风玉露一相逢，便胜却人间无数。\n柔情似水，佳期如梦，忍顾鹊桥归路。\n两情若是久长时，又岂在朝朝暮暮。" }, { name: "《满庭芳》", fullText: "山抹微云，天连衰草，画角声断谯门。\n暂停征棹，聊共引离尊。\n多少蓬莱旧事，空回首、烟霭纷纷。\n斜阳外，寒鸦万点，流水绕孤村。" }], fame: 2, relations: [{ name: "苏轼", type: "挚友", strength: "strong" }, { name: "黄庭坚", type: "挚友", strength: "strong" }] },
+            { id: 110, name: "周邦彦", era: "北宋", achievement: "词中老杜", works: [{ name: "《苏幕遮》", fullText: "燎沉香，消溽暑。\n鸟雀呼晴，侵晓窥檐语。\n叶上初阳干宿雨，水面清圆，一一风荷举。\n故乡遥，何日去。\n家住吴门，久作长安旅。\n五月渔郎相忆否？小楫轻舟，梦入芙蓉浦。" }], fame: 2, relations: [{ name: "柳永", type: "崇敬", strength: "weak" }] },
+            { id: 111, name: "李清照", era: "北宋", achievement: "千古第一才女", works: [{ name: "《如梦令》", fullText: "常记溪亭日暮，沉醉不知归路。\n兴尽晚回舟，误入藕花深处。\n争渡，争渡，惊起一滩鸥鹭。" }, { name: "《声声慢》", fullText: "寻寻觅觅，冷冷清清，凄凄惨惨戚戚。\n乍暖还寒时候，最难将息。\n三杯两盏淡酒，怎敌他、晚来风急？\n雁过也，正伤心，却是旧时相识。" }, { name: "《一剪梅》", fullText: "红藕香残玉簟秋，轻解罗裳，独上兰舟。\n云中谁寄锦书来？雁字回时，月满西楼。\n花自飘零水自流，一种相思，两处闲愁。\n此情无计可消除，才下眉头，却上心头。" }], fame: 1, relations: [{ name: "赵明诚", type: "亲属", strength: "strong" }] },
+            { id: 112, name: "岳飞", era: "南宋", achievement: "民族英雄", works: [{ name: "《满江红》", fullText: "怒发冲冠，凭栏处、潇潇雨歇。\n抬望眼，仰天长啸，壮怀激烈。\n三十功名尘与土，八千里路云和月。\n莫等闲，白了少年头，空悲切。\n靖康耻，犹未雪；臣子恨，何时灭！\n驾长车，踏破贺兰山缺。\n壮志饥餐胡虏肉，笑谈渴饮匈奴血。\n待从头、收拾旧山河，朝天阙。" }], fame: 2, relations: [] },
+            { id: 113, name: "陆游", era: "南宋", achievement: "爱国诗人", works: [{ name: "《示儿》", fullText: "死去元知万事空，但悲不见九州同。\n王师北定中原日，家祭无忘告乃翁。" }, { name: "《钗头凤》", fullText: "红酥手，黄縢酒，满城春色宫墙柳。\n东风恶，欢情薄。\n一怀愁绪，几年离索。\n错、错、错。\n春如旧，人空瘦，泪痕红浥鲛绡透。\n桃花落，闲池阁。\n山盟虽在，锦书难托。\n莫、莫、莫！" }, { name: "《游山西村》", fullText: "莫笑农家腊酒浑，丰年留客足鸡豚。\n山重水复疑无路，柳暗花明又一村。\n箫鼓追随春社近，衣冠简朴古风存。\n从今若许闲乘月，拄杖无时夜叩门。" }], fame: 1, relations: [{ name: "唐婉", type: "亲属", strength: "strong" }, { name: "杜甫", type: "崇敬", strength: "weak" }] },
+            { id: 114, name: "辛弃疾", era: "南宋", achievement: "词中之龙", works: [{ name: "《破阵子》", fullText: "醉里挑灯看剑，梦回吹角连营。\n八百里分麾下炙，五十弦翻塞外声，沙场秋点兵。\n马作的卢飞快，弓如霹雳弦惊。\n了却君王天下事，赢得生前身后名。\n可怜白发生！" }, { name: "《永遇乐》", fullText: "千古江山，英雄无觅，孙仲谋处。\n舞榭歌台，风流总被，雨打风吹去。\n斜阳草树，寻常巷陌，人道寄奴曾住。\n想当年，金戈铁马，气吞万里如虎。" }, { name: "《青玉案》", fullText: "东风夜放花千树，更吹落、星如雨。\n宝马雕车香满路。\n凤箫声动，玉壶光转，一夜鱼龙舞。\n蛾儿雪柳黄金缕，笑语盈盈暗香去。\n众里寻他千百度，蓦然回首，那人却在，灯火阑珊处。" }], fame: 1, relations: [{ name: "苏轼", type: "崇敬", strength: "weak" }] },
+            { id: 115, name: "文天祥", era: "南宋", achievement: "民族英雄", works: [{ name: "《正气歌》", fullText: "天地有正气，杂然赋流形。\n下则为河岳，上则为日星。\n于人曰浩然，沛乎塞苍冥。" }, { name: "《过零丁洋》", fullText: "辛苦遭逢起一经，干戈寥落四周星。\n山河破碎风飘絮，身世浮沉雨打萍。\n惶恐滩头说惶恐，零丁洋里叹零丁。\n人生自古谁无死？留取丹心照汗青。" }], fame: 2, relations: [] },
+            { id: 116, name: "杨万里", era: "南宋", achievement: "诗人", works: [{ name: "《晓出净慈寺送林子方》", fullText: "毕竟西湖六月中，风光不与四时同。\n接天莲叶无穷碧，映日荷花别样红。" }, { name: "《小池》", fullText: "泉眼无声惜细流，树阴照水爱晴柔。\n小荷才露尖尖角，早有蜻蜓立上头。" }], fame: 2, relations: [{ name: "陆游", type: "文坛同事", strength: "medium" }] },
+            { id: 117, name: "范成大", era: "南宋", achievement: "诗人", works: [{ name: "《四时田园杂兴》", fullText: "昼出耘田夜绩麻，村庄儿女各当家。\n童孙未解供耕织，也傍桑阴学种瓜。" }], fame: 3, relations: [{ name: "陆游", type: "挚友", strength: "strong" }] },
+            { id: 118, name: "朱熹", era: "南宋", achievement: "理学家", works: [{ name: "《春日》", fullText: "胜日寻芳泗水滨，无边光景一时新。\n等闲识得东风面，万紫千红总是春。" }, { name: "《观书有感》", fullText: "半亩方塘一鉴开，天光云影共徘徊。\n问渠那得清如许？为有源头活水来。" }], fame: 2, relations: [] },
+            { id: 119, name: "姜夔", era: "南宋", achievement: "词人", works: [{ name: "《扬州慢》", fullText: "淮左名都，竹西佳处，解鞍少驻初程。\n过春风十里，尽荠麦青青。\n自胡马窥江去后，废池乔木，犹厌言兵。\n渐黄昏，清角吹寒，都在空城。" }, { name: "《暗香》", fullText: "旧时月色，算几番照我，梅边吹笛？\n唤起玉人，不管清寒与攀摘。\n何逊而今渐老，都忘却春风词笔。\n但怪得竹外疏花，香冷入瑶席。" }], fame: 2, relations: [{ name: "苏轼", type: "崇敬", strength: "weak" }] },
+            { id: 120, name: "柳如是", era: "明末清初", achievement: "才女", works: [{ name: "《金明池》", fullText: "总一种凄凉，十分明细，尚燕赵歌声笑一时。" }], fame: 3, relations: [{ name: "李清照", type: "崇敬", strength: "weak" }] },
+            { id: 121, name: "唐婉", era: "南宋", achievement: "才女", works: [{ name: "《钗头凤》", fullText: "世情薄，人情恶，雨送黄昏花易落。\n晓风干，泪痕残。\n欲笺心事，独语斜阑。\n难，难，难！\n人成各，今非昨，病魂常似秋千索。\n角声寒，夜阑珊。\n怕人寻问，咽泪装欢。\n瞒，瞒，瞒！" }], fame: 3, relations: [{ name: "陆游", type: "亲属", strength: "strong" }] },
+            { id: 122, name: "贺知章", era: "南宋", achievement: "", works: [{ name: "《鹧鸪天》", fullText: "千尺游丝ido绕花身，等闲啼鸟唤春归。" }], fame: 4, relations: [] },
+            { id: 123, name: "刘克庄", era: "南宋", achievement: "江湖诗人", works: [{ name: "《满江红》", fullText: "金甲雕戈，记当日、辕门初立。\n铁骑突元，重围还一。\n身佩黄金印，腹藏红粉简。" }], fame: 3, relations: [{ name: "辛弃疾", type: "崇敬", strength: "weak" }] },
+            { id: 124, name: "吴文英", era: "南宋", achievement: "词人", works: [{ name: "《风入松》", fullText: "听风听雨过清明，愁草瘗花铭。\n楼前绿暗分携路，一丝柳、一寸柔情。\n料峭春寒中酒，交加晓梦啼莺。" }], fame: 3, relations: [] },
+            { id: 125, name: "张孝祥", era: "南宋", achievement: "词人", works: [{ name: "《六州歌头》", fullText: "长淮望断，关塞莽然平。\n征尘暗，霜风劲，悄边声。\n黯销凝。\n追想当年事，危天数，犹横议。" }], fame: 3, relations: [{ name: "苏轼", type: "崇敬", strength: "weak" }] },
+            { id: 126, name: "史达祖", era: "南宋", achievement: "词人", works: [{ name: "《绮罗香》", fullText: "做冷欺花，将烟困柳，千里偷催春暮。\n尽日冥迷，愁里欲飞还住。\n惊粉重、蝶宿西园，喜泥润、燕归南浦。" }], fame: 3, relations: [] },
+            { id: 127, name: "周密", era: "南宋", achievement: "词人", works: [{ name: "《观潮》", fullText: "浙江之潮，天下之伟观也。\n自既望以至十八日为盛。\n方其远出海门，仅如银线；既而渐近，则玉城雪岭际天而来。" }], fame: 3, relations: [] },
+            { id: 128, name: "刘禹锡", era: "北宋", achievement: "诗人", works: [{ name: "《秋词》", fullText: "自古逢秋悲寂寥，我言秋日胜春朝。\n晴空一鹤排云上，便引诗情到碧霄。" }], fame: 2, relations: [{ name: "白居易", type: "崇敬", strength: "weak" }] },
+            { id: 129, name: "梅尧臣", era: "北宋", achievement: "诗人", works: [{ name: "《鲁山山行》", fullText: "适与野情惬，千山高复低。\n好峰随处改，幽径独行迷。\n霜落熊升树，林空鹿饮溪。\n人家在何许？云外一声鸡。" }], fame: 3, relations: [{ name: "欧阳修", type: "挚友", strength: "strong" }] },
+            { id: 130, name: "曾巩", era: "北宋", achievement: "唐宋八大家", works: [{ name: "《墨池记》", fullText: "临川之城东，有地隐然而高，以临于溪，曰新城。\n新城之上，有池洼然而方以长，曰王羲之之墨池者。" }], fame: 2, relations: [{ name: "欧阳修", type: "师友", strength: "medium" }] },
+            { id: 131, name: "王安石", era: "北宋", achievement: "文学家", works: [{ name: "《桂枝香》", fullText: "登临送目，正故国晚秋，天气初肃。\n千里澄江似练，翠峰如簇。\n归帆去棹残阳里，背西风、酒旗斜矗。" }], fame: 2, relations: [{ name: "苏轼", type: "政敌", strength: "weak" }] },
+            { id: 132, name: "韩愈", era: "北宋", achievement: "文学家", works: [{ name: "《早春呈水部张十八员外》", fullText: "天街小雨润如酥，草色遥看近却无。\n最是一年春好处，绝胜烟柳满皇都。" }], fame: 2, relations: [{ name: "柳宗元", type: "挚友", strength: "strong" }] },
+            { id: 133, name: "温庭筠", era: "北宋", achievement: "词人", works: [{ name: "《望江南》", fullText: "梳洗罢，独倚望江楼。\n过尽千帆皆不是，斜晖脉脉水悠悠。\n肠断白蘋洲。" }], fame: 2, relations: [{ name: "韦庄", type: "挚友", strength: "strong" }] },
+            { id: 134, name: "李煜", era: "南唐", achievement: "词帝", works: [{ name: "《虞美人》", fullText: "春花秋月何时了？往事知多少。\n小楼昨夜又东风，故国不堪回首月明中。\n雕栏玉砌应犹在，只是朱颜改。\n问君能有几多愁？恰似一江春水向东流。" }, { name: "《相见欢》", fullText: "无言独上西楼，月如钩。\n寂寞梧桐深院锁清秋。\n剪不断，理还乱，是离愁。\n别是一般滋味在心头。" }], fame: 1, relations: [{ name: "李清照", type: "崇敬", strength: "weak" }] },
+            { id: 135, name: "赵明诚", era: "南宋", achievement: "金石学家", works: [{ name: "《金石录后序》", fullText: "余建中辛已，始归赵氏。\n时先君作礼部员外郎，丞相作吏部侍郎。" }], fame: 4, relations: [{ name: "李清照", type: "亲属", strength: "strong" }] },
+            { id: 136, name: "赵鼎", era: "南宋", achievement: "政治家", works: [{ name: "《满江红》", fullText: "惨结秋阴，西风送、霏霏雨湿。\n凄望眼、征鸿几字，暮投沙碛。" }], fame: 4, relations: [] },
+            { id: 137, name: "韩元吉", era: "南宋", achievement: "词人", works: [{ name: "《霜天晓角》", fullText: "倚天绝壁，直下江千尺。\n天际两蛾凝黛，愁与恨、几时极。" }], fame: 4, relations: [{ name: "陆游", type: "挚友", strength: "strong" }] },
+            { id: 138, name: "袁去华", era: "南宋", achievement: "词人", works: [{ name: "《水调歌头》", fullText: "雄跨洞庭野，楚望古湘州。\n何王台殿，危基百尺自西刘。" }], fame: 4, relations: [] },
+            { id: 139, name: "陆叡", era: "南宋", achievement: "词人", works: [{ name: "《瑞鹤仙》", fullText: "湿云黏雁影。\n望征路愁迷，离绪谁整。" }], fame: 4, relations: [] },
+            { id: 140, name: "石孝友", era: "南宋", achievement: "词人", works: [{ name: "《惜奴娇》", fullText: "我已多情，更撞著、多情底你。\n把一心、十分向你。" }], fame: 4, relations: [] },
+            { id: 141, name: "赵磻老", era: "南宋", achievement: "词人", works: [{ name: "《满江红》", fullText: "重到西湖，春拆信、潮生如箭。" }], fame: 4, relations: [] },
+            { id: 142, name: "魏了翁", era: "南宋", achievement: "理学家", works: [{ name: "《满江红》", fullText: "天地无今古，人情自昔间。\n一杯谁与吊寒儒。" }], fame: 4, relations: [] },
+            { id: 143, name: "李好古", era: "南宋", achievement: "词人", works: [{ name: "《江城子》", fullText: "平沙浅草接天长。\n路茫茫。\n几重山。" }], fame: 4, relations: [] },
+            { id: 144, name: "僧挥", era: "北宋", achievement: "词僧", works: [{ name: "《金明池》", fullText: "天阔云高，溪横水远，晚日寒生晕。\n润入东风，暖回燕阵，巧弄新声翻转。" }], fame: 4, relations: [] },
+            { id: 145, name: "苏辙", era: "北宋", achievement: "文学家", works: [{ name: "《水调歌头》", fullText: "离别一何久，七度过中秋。\n去年东武今夕，明月不胜愁。" }], fame: 3, relations: [{ name: "苏轼", type: "亲属", strength: "strong" }] },
+            { id: 146, name: "曾几", era: "南宋", achievement: "诗人", works: [{ name: "《三衢道中》", fullText: "梅子黄时日日晴，小溪泛尽却山行。\n绿阴不减来时路，添得黄鹂四五声。" }], fame: 4, relations: [{ name: "陆游", type: "师友", strength: "medium" }] },
+            { id: 147, name: "赵蕃", era: "南宋", achievement: "诗人", works: [{ name: "《晨起》", fullText: "晨起复还卧，渠今念已深。" }], fame: 4, relations: [] },
+            { id: 148, name: "韩疁", era: "南宋", achievement: "词人", works: [{ name: "《高阳台》", fullText: "频听银签，重燃绛蜡，年华衮衮惊心。\n饯旧迎新，能消几刻光阴。" }], fame: 4, relations: [] },
+            { id: 149, name: "徐安国", era: "南宋", achievement: "词人", works: [{ name: "《满江红》", fullText: "iemann谁道是生涯。" }], fame: 4, relations: [] },
+            { id: 150, name: "黄孝迈", era: "南宋", achievement: "词人", works: [{ name: "《湘春夜月》", fullText: "近清明，翠禽枝上消魂。\n可惜一片清歌，都付与黄昏。" }], fame: 4, relations: [] }
         ];
 
         let scene, camera, renderer;
@@ -605,6 +677,13 @@
                 4: { color: 0x808080, emissive: 0x606060, intensity: 0.6 }
             };
             
+            const songColors = {
+                1: { color: 0xffffff, emissive: 0x4169e1, intensity: 2.0 },
+                2: { color: 0x6495ed, emissive: 0x1e90ff, intensity: 1.5 },
+                3: { color: 0x87ceeb, emissive: 0x4682b4, intensity: 1.0 },
+                4: { color: 0x708090, emissive: 0x4a6a8a, intensity: 0.6 }
+            };
+            
             const fameSizes = {
                 1: 2.2,
                 2: 1.8,
@@ -622,7 +701,8 @@
                 const z = radius * Math.cos(phi);
                 
                 const size = fameSizes[poet.fame];
-                const colors = fameColors[poet.fame];
+                const isSong = poet.era && (poet.era.includes('宋') || poet.era.includes('南唐') || poet.era.includes('明末清初'));
+                const colors = isSong ? songColors[poet.fame] : fameColors[poet.fame];
                 
                 const starGeometry = new THREE.CircleGeometry(size, 32);
                 const starMaterial = new THREE.MeshBasicMaterial({
@@ -740,8 +820,30 @@
         }
         
         let activeFameLevels = [1, 2, 3, 4];
+        let activeDynasties = { tang: true, song: true };
         
         function initCategoryFilters() {
+            const dynastyItems = document.querySelectorAll('.legend-item.dynasty-filter');
+            dynastyItems.forEach(item => {
+                const dynasty = item.dataset.dynasty;
+                if (activeDynasties[dynasty]) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.add('inactive');
+                }
+                item.addEventListener('click', () => {
+                    activeDynasties[dynasty] = !activeDynasties[dynasty];
+                    if (activeDynasties[dynasty]) {
+                        item.classList.add('active');
+                        item.classList.remove('inactive');
+                    } else {
+                        item.classList.add('inactive');
+                        item.classList.remove('active');
+                    }
+                    filterStars();
+                });
+            });
+            
             const legendItems = document.querySelectorAll('.legend-item[data-fame]');
             legendItems.forEach(item => {
                 item.classList.add('active');
@@ -764,21 +866,25 @@
         }
         
         function filterStars() {
+            const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
+            
+            function shouldShowPoet(poet) {
+                const era = poet.era;
+                const isSong = isSongDynasty(era);
+                const dynastyMatch = (isSong && activeDynasties.song) || (!isSong && activeDynasties.tang);
+                const fameMatch = activeFameLevels.includes(poet.fame);
+                return dynastyMatch && fameMatch;
+            }
+            
             stars.forEach(star => {
                 if (star.userData && star.userData.poet) {
-                    const fame = star.userData.poet.fame;
-                    if (activeFameLevels.includes(fame)) {
-                        star.visible = true;
-                    } else {
-                        star.visible = false;
-                    }
+                    star.visible = shouldShowPoet(star.userData.poet);
                 }
             });
             
             starMeshes.forEach(mesh => {
                 if (mesh.userData && mesh.userData.poet) {
-                    const fame = mesh.userData.poet.fame;
-                    mesh.visible = activeFameLevels.includes(fame);
+                    mesh.visible = shouldShowPoet(mesh.userData.poet);
                 }
             });
             
@@ -787,9 +893,7 @@
                     const sourcePoet = poetsData.find(p => p.name === line.userData.source);
                     const targetPoet = poetsData.find(p => p.name === line.userData.target);
                     if (sourcePoet && targetPoet) {
-                        const sourceVisible = activeFameLevels.includes(sourcePoet.fame);
-                        const targetVisible = activeFameLevels.includes(targetPoet.fame);
-                        line.visible = sourceVisible && targetVisible;
+                        line.visible = shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet);
                     }
                 }
             });
@@ -971,6 +1075,18 @@
             }
             
             const targetPoet = targetStar.userData.poet;
+            const isTargetSong = targetPoet.era && (targetPoet.era.includes('宋') || targetPoet.era.includes('南唐') || targetPoet.era.includes('明末清初'));
+            const targetDynasty = isTargetSong ? 'song' : 'tang';
+            
+            if (!activeDynasties[targetDynasty]) {
+                activeDynasties[targetDynasty] = true;
+                const dynastyItem = document.querySelector(`.legend-item.dynasty-filter[data-dynasty="${targetDynasty}"]`);
+                if (dynastyItem) {
+                    dynastyItem.classList.add('active');
+                    dynastyItem.classList.remove('inactive');
+                }
+                filterStars();
+            }
             
             const starPosition = new THREE.Vector3();
             targetStar.getWorldPosition(starPosition);
