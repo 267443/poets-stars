@@ -926,54 +926,80 @@
                 currentCategory = 'general';
                 titleText = '唐朝将星星空';
                 subtitleText = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                // 将星标签切换时，自动设置分类筛选
+                showGenerals = true;
+                showPoets = false;
+                activeDynasties = { tang: true, song: false };
             } else if (dynasty === 'song-general') {
                 currentCategory = 'song-general';
                 titleText = '宋朝将星星空';
                 subtitleText = 'SONG DYNASTY GENERALS · 星辰般的战魂';
+                // 将星标签切换时，自动设置分类筛选
+                showGenerals = true;
+                showPoets = false;
+                activeDynasties = { tang: false, song: true };
             } else {
                 currentCategory = 'poet';
                 titleText = dynasty === 'tang' ? '大唐诗人星图' : '大宋词人星图';
                 subtitleText = dynasty === 'tang' ? 'TANG DYNASTY POETS · 星辰般的诗魂' : 'SONG DYNASTY POETS · 词韵如星';
+                // 诗人标签切换时，自动设置分类筛选
+                showPoets = true;
+                showGenerals = false;
+                activeDynasties = dynasty === 'tang' ? { tang: true, song: false } : { tang: false, song: true };
             }
             document.querySelector('.title-bar h1').textContent = titleText;
             document.querySelector('.title-bar p').textContent = subtitleText;
             
-            document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+            // 更新分类筛选UI
+            document.querySelectorAll('.legend-item.category-filter').forEach(item => {
                 item.classList.remove('active', 'inactive');
-                if (dynasty === 'tang') {
-                    if (item.dataset.dynasty === 'tang') {
+                if (item.dataset.category === 'poet') {
+                    if (showPoets) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
                     }
-                } else if (dynasty === 'song') {
-                    if (item.dataset.dynasty === 'song') {
+                } else if (item.dataset.category === 'general') {
+                    if (showGenerals) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
                     }
-                } else if (dynasty === 'general' || dynasty === 'song-general') {
-                    // 将星视图下保持所有朝代筛选状态不变
                 }
             });
             
+            // 更新朝代筛选UI
+            document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                item.classList.remove('active', 'inactive');
+                if (item.dataset.dynasty === 'tang') {
+                    if (activeDynasties.tang) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                } else if (item.dataset.dynasty === 'song') {
+                    if (activeDynasties.song) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                }
+            });
+            
+            // 根据当前分类设置场景可见性
             scene.visible = false;
-            tangScene.visible = false;
-            songScene.visible = false;
-            generalScene.visible = false;
-            songGeneralScene.visible = false;
+            tangScene.visible = (currentCategory === 'poet' && currentDynasty === 'tang');
+            songScene.visible = (currentCategory === 'poet' && currentDynasty === 'song');
+            generalScene.visible = (currentCategory === 'general');
+            songGeneralScene.visible = (currentCategory === 'song-general');
             
             if (dynasty === 'tang') {
-                tangScene.visible = showPoets;
                 scene = tangScene;
             } else if (dynasty === 'song') {
-                songScene.visible = showPoets;
                 scene = songScene;
             } else if (dynasty === 'general') {
-                generalScene.visible = showGenerals;
                 scene = generalScene;
             } else if (dynasty === 'song-general') {
-                songGeneralScene.visible = showGenerals;
                 scene = songGeneralScene;
             }
             
@@ -1560,7 +1586,17 @@
                     item.classList.add('inactive');
                 }
                 item.addEventListener('click', () => {
-                    switchDynasty(dynasty);
+                    // 点击朝代筛选时，根据当前分类状态决定切换目标
+                    if (currentCategory === 'general') {
+                        // 当前在唐朝将星，点击唐朝保持，点击宋朝切换到宋朝将星
+                        switchDynasty(dynasty === 'tang' ? 'general' : 'song-general');
+                    } else if (currentCategory === 'song-general') {
+                        // 当前在宋朝将星，点击宋朝保持，点击唐朝切换到唐朝将星
+                        switchDynasty(dynasty === 'song' ? 'song-general' : 'general');
+                    } else {
+                        // 当前在诗人模式，切换到对应朝代的诗人
+                        switchDynasty(dynasty);
+                    }
                 });
             });
             
@@ -1600,8 +1636,28 @@
                             item.classList.remove('active');
                         }
                     }
-                    updateAllScenesVisibility();
-                    filterStars();
+                    
+                    // 根据分类筛选状态决定目标场景
+                    if (!showPoets && showGenerals) {
+                        // 仅显示将星，切换到唐朝将星
+                        switchDynasty('general');
+                    } else if (showPoets && !showGenerals) {
+                        // 仅显示诗人，切换到当前朝代的诗人（默认唐朝）
+                        if (currentDynasty === 'general' || currentDynasty === 'song-general') {
+                            switchDynasty('tang');
+                        } else {
+                            updateAllScenesVisibility();
+                            filterStars();
+                        }
+                    } else if (showPoets && showGenerals) {
+                        // 同时显示，保持当前状态但确保场景可见性正确
+                        updateAllScenesVisibility();
+                        filterStars();
+                    } else {
+                        // 都不显示，保持当前状态
+                        updateAllScenesVisibility();
+                        filterStars();
+                    }
                 });
             });
             
@@ -1642,6 +1698,15 @@
                 document.querySelector('.dynasty-tab.general').classList.add('active');
                 document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
                 document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                activeDynasties = { tang: true, song: false };
+                document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                    item.classList.remove('active', 'inactive');
+                    if (item.dataset.dynasty === 'tang') {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                });
             } else if (showPoets && !showGenerals) {
                 currentCategory = 'poet';
                 if (currentDynasty === 'general' || currentDynasty === 'song-general') {
@@ -1655,11 +1720,22 @@
                     document.querySelector('.dynasty-tab.tang').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '大唐诗人星图';
                     document.querySelector('.title-bar p').textContent = 'TANG DYNASTY POETS · 星辰般的诗魂';
+                    activeDynasties = { tang: true, song: false };
                 } else {
                     document.querySelector('.dynasty-tab.song').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '大宋词人星图';
                     document.querySelector('.title-bar p').textContent = 'SONG DYNASTY POETS · 词韵如星';
+                    activeDynasties = { tang: false, song: true };
                 }
+                document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                    item.classList.remove('active', 'inactive');
+                    if ((item.dataset.dynasty === 'tang' && currentDynasty === 'tang') ||
+                        (item.dataset.dynasty === 'song' && currentDynasty === 'song')) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                });
             } else if (!showPoets && !showGenerals) {
                 scene.visible = false;
             } else {
@@ -1674,6 +1750,15 @@
                         document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
                     }
                     scene = generalScene;
+                    activeDynasties = { tang: true, song: false };
+                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                        item.classList.remove('active', 'inactive');
+                        if (item.dataset.dynasty === 'tang') {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.add('inactive');
+                        }
+                    });
                 } else if (currentCategory === 'song-general') {
                     if (currentDynasty !== 'song-general') {
                         currentDynasty = 'song-general';
@@ -1685,6 +1770,15 @@
                         document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
                     }
                     scene = songGeneralScene;
+                    activeDynasties = { tang: false, song: true };
+                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                        item.classList.remove('active', 'inactive');
+                        if (item.dataset.dynasty === 'song') {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.add('inactive');
+                        }
+                    });
                 } else {
                     if (currentDynasty === 'general') {
                         currentDynasty = 'tang';
@@ -1704,20 +1798,100 @@
                         document.querySelector('.title-bar p').textContent = 'SONG DYNASTY POETS · 词韵如星';
                     }
                     scene = currentDynasty === 'tang' ? tangScene : songScene;
+                    activeDynasties = currentDynasty === 'tang' ? { tang: true, song: false } : { tang: false, song: true };
+                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                        item.classList.remove('active', 'inactive');
+                        if ((item.dataset.dynasty === 'tang' && currentDynasty === 'tang') ||
+                            (item.dataset.dynasty === 'song' && currentDynasty === 'song')) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.add('inactive');
+                        }
+                    });
                 }
             }
         }
         
         function filterStars() {
+            const noFameSelected = activeFameLevels.length === 0;
+            
             function shouldShowPoet(poet) {
+                if (noFameSelected) {
+                    return false;
+                }
                 const fameMatch = activeFameLevels.includes(poet.fame);
                 return fameMatch;
             }
             
             function shouldShowGeneral(general) {
+                if (noFameSelected) {
+                    return false;
+                }
                 const fameMatch = activeFameLevels.includes(general.fame);
                 return fameMatch;
             }
+            
+            const allStars = [...tangStars, ...songStars, ...generalStars, ...songGeneralStars];
+            const allStarMeshes = [...tangStarMeshes, ...songStarMeshes, ...generalStarMeshes, ...songGeneralStarMeshes];
+            const allLines = [...tangLines, ...songLines, ...generalLines, ...songGeneralLines];
+            
+            allStars.forEach(star => {
+                if (star.userData && star.userData.poet) {
+                    star.visible = noFameSelected ? false : shouldShowPoet(star.userData.poet);
+                } else if (star.userData && star.userData.general) {
+                    star.visible = noFameSelected ? false : shouldShowGeneral(star.userData.general);
+                }
+            });
+            
+            allStarMeshes.forEach(mesh => {
+                if (mesh.userData && mesh.userData.poet) {
+                    mesh.visible = noFameSelected ? false : shouldShowPoet(mesh.userData.poet);
+                } else if (mesh.userData && mesh.userData.general) {
+                    mesh.visible = noFameSelected ? false : shouldShowGeneral(mesh.userData.general);
+                }
+            });
+            
+            tangStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
+            songStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
+            generalStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
+            songGeneralStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
+            
+            tangStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
+            songStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
+            generalStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
+            songGeneralStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
             
             const currentStars = getCurrentStars();
             const currentStarMeshes = getCurrentStarMeshes();
@@ -1745,18 +1919,18 @@
                     const sourcePoet = currentPoetsData.find(p => p.name === line.userData.source);
                     const targetPoet = currentPoetsData.find(p => p.name === line.userData.target);
                     if (sourcePoet && targetPoet) {
-                        line.visible = shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet);
+                        line.visible = noFameSelected ? false : (shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet));
                     } else if (currentCategory === 'general') {
                         const sourceGeneral = tangGenerals.find(g => g.name === line.userData.source);
                         const targetGeneral = tangGenerals.find(g => g.name === line.userData.target);
                         if (sourceGeneral && targetGeneral) {
-                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
+                            line.visible = noFameSelected ? false : (shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral));
                         }
                     } else if (currentCategory === 'song-general') {
                         const sourceGeneral = songGenerals.find(g => g.name === line.userData.source);
                         const targetGeneral = songGenerals.find(g => g.name === line.userData.target);
                         if (sourceGeneral && targetGeneral) {
-                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
+                            line.visible = noFameSelected ? false : (shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral));
                         }
                     }
                 }
@@ -1896,6 +2070,14 @@
                         nameSpan.dataset.poetId = relatedPoet.id;
                         nameSpan.addEventListener('click', () => {
                             navigateToPoet(relatedPoet.id, true);
+                            const isTargetGeneral = relatedPoet.id >= 1000;
+                            if (isTargetGeneral) {
+                                const targetGeneral = relatedPoet;
+                                showPoetInfo(targetGeneral, true);
+                            } else {
+                                const targetPoet = relatedPoet;
+                                showPoetInfo(targetPoet, true);
+                            }
                         });
                     }
                     
@@ -1993,15 +2175,39 @@
             if (isTargetGeneral && currentIsGeneral) {
                 if (currentDynasty !== targetDynasty) {
                     switchDynasty(targetDynasty);
+                    filterStars();
                 }
             } else if (isTargetPoet && currentIsPoet) {
                 if (currentDynasty !== targetDynasty) {
                     switchDynasty(targetDynasty);
+                    filterStars();
                 }
             } else if (isTargetGeneral && currentIsPoet) {
-                return;
+                showGenerals = true;
+                showPoets = false;
+                document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
+                    cItem.classList.remove('active', 'inactive');
+                    if (cItem.dataset.category === 'general') {
+                        cItem.classList.add('active');
+                    } else {
+                        cItem.classList.add('inactive');
+                    }
+                });
+                switchDynasty(targetDynasty);
+                filterStars();
             } else if (isTargetPoet && currentIsGeneral) {
-                return;
+                showPoets = true;
+                showGenerals = false;
+                document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
+                    cItem.classList.remove('active', 'inactive');
+                    if (cItem.dataset.category === 'poet') {
+                        cItem.classList.add('active');
+                    } else {
+                        cItem.classList.add('inactive');
+                    }
+                });
+                switchDynasty(targetDynasty);
+                filterStars();
             }
             
             setTimeout(() => {
