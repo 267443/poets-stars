@@ -575,10 +575,10 @@
         <div class="legend-item category-filter active" data-category="general"><div class="legend-dot general-dot"></div>将星</div>
         <div class="legend-divider"></div>
         <div class="legend-section-title">人物级别</div>
-        <div class="legend-item" data-fame="1"><div class="legend-dot fame-1"></div>诗仙/诗圣</div>
-        <div class="legend-item" data-fame="2"><div class="legend-dot fame-2"></div>名家</div>
-        <div class="legend-item" data-fame="3"><div class="legend-dot fame-3"></div>重要诗人</div>
-        <div class="legend-item" data-fame="4"><div class="legend-dot fame-4"></div>一般诗人</div>
+        <div class="legend-item" data-fame="1"><div class="legend-dot fame-1"></div>诗仙/兵神</div>
+        <div class="legend-item" data-fame="2"><div class="legend-dot fame-2"></div>名家/兵家</div>
+        <div class="legend-item" data-fame="3"><div class="legend-dot fame-3"></div>重要诗人/重要将领</div>
+        <div class="legend-item" data-fame="4"><div class="legend-dot fame-4"></div>一般诗人/一般将领</div>
         <div class="legend-item" style="margin-top: 20px;"><div class="legend-line strong"></div>挚友/至亲</div>
         <div class="legend-item"><div class="legend-line medium"></div>文坛同事</div>
         <div class="legend-item"><div class="legend-line weak"></div>泛泛之交</div>
@@ -1386,9 +1386,10 @@
                 });
                 const glow = new THREE.Mesh(glowGeometry, glowMaterial);
                 glow.position.set(x, y, z);
+                glow.userData = { general: general, type: 'general' };
                 generalScene.add(glow);
                 
-                generalStarMeshes.push(star);
+                generalStarMeshes.push(star, glow);
             });
         }
 
@@ -1497,9 +1498,10 @@
                 });
                 const glow = new THREE.Mesh(glowGeometry, glowMaterial);
                 glow.position.set(x, y, z);
+                glow.userData = { general: general, type: 'song-general' };
                 songGeneralScene.add(glow);
                 
-                songGeneralStarMeshes.push(star);
+                songGeneralStarMeshes.push(star, glow);
             });
         }
 
@@ -1639,8 +1641,14 @@
                     
                     // 根据分类筛选状态决定目标场景
                     if (!showPoets && showGenerals) {
-                        // 仅显示将星，切换到唐朝将星
-                        switchDynasty('general');
+                        // 仅显示将星，根据当前勾选的朝代决定显示哪个将星
+                        if (activeDynasties.song && !activeDynasties.tang) {
+                            // 仅勾选宋朝，切换到宋朝将星
+                            switchDynasty('song-general');
+                        } else {
+                            // 默认切换到唐朝将星
+                            switchDynasty('general');
+                        }
                     } else if (showPoets && !showGenerals) {
                         // 仅显示诗人，切换到当前朝代的诗人（默认唐朝）
                         if (currentDynasty === 'general' || currentDynasty === 'song-general') {
@@ -1683,21 +1691,49 @@
         }
         
         function updateAllScenesVisibility() {
+            // 先根据分类设置场景可见性
             tangScene.visible = showPoets;
             songScene.visible = showPoets;
             generalScene.visible = showGenerals;
             songGeneralScene.visible = showGenerals;
             
+            // 根据朝代筛选和分类筛选确定当前应该显示的场景
             if (!showPoets && showGenerals) {
-                currentCategory = 'general';
-                currentDynasty = 'general';
-                scene = generalScene;
-                document.querySelectorAll('.dynasty-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                document.querySelector('.dynasty-tab.general').classList.add('active');
-                document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
-                document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                // 仅显示将星，根据朝代筛选决定显示哪个将星场景
+                if (activeDynasties.tang && !activeDynasties.song) {
+                    // 仅勾选唐朝
+                    currentCategory = 'general';
+                    currentDynasty = 'general';
+                    scene = generalScene;
+                    document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    document.querySelector('.dynasty-tab.general').classList.add('active');
+                    document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
+                    document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                } else if (!activeDynasties.tang && activeDynasties.song) {
+                    // 仅勾选宋朝
+                    currentCategory = 'song-general';
+                    currentDynasty = 'song-general';
+                    scene = songGeneralScene;
+                    document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                    document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
+                    document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
+                } else {
+                    // 两个都勾选，默认显示唐朝将星
+                    currentCategory = 'general';
+                    currentDynasty = 'general';
+                    scene = generalScene;
+                    document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    document.querySelector('.dynasty-tab.general').classList.add('active');
+                    document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
+                    document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                }
                 activeDynasties = { tang: true, song: false };
                 document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
                     item.classList.remove('active', 'inactive');
@@ -1708,6 +1744,7 @@
                     }
                 });
             } else if (showPoets && !showGenerals) {
+                // 仅显示诗人，根据朝代筛选决定显示哪个诗人场景
                 currentCategory = 'poet';
                 if (currentDynasty === 'general' || currentDynasty === 'song-general') {
                     currentDynasty = 'tang';
@@ -1739,48 +1776,12 @@
             } else if (!showPoets && !showGenerals) {
                 scene.visible = false;
             } else {
-                if (currentCategory === 'general') {
-                    if (currentDynasty !== 'general') {
-                        currentDynasty = 'general';
-                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
-                            tab.classList.remove('active');
-                        });
-                        document.querySelector('.dynasty-tab.general').classList.add('active');
-                        document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
-                        document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
-                    }
-                    scene = generalScene;
-                    activeDynasties = { tang: true, song: false };
-                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
-                        item.classList.remove('active', 'inactive');
-                        if (item.dataset.dynasty === 'tang') {
-                            item.classList.add('active');
-                        } else {
-                            item.classList.add('inactive');
-                        }
-                    });
-                } else if (currentCategory === 'song-general') {
-                    if (currentDynasty !== 'song-general') {
-                        currentDynasty = 'song-general';
-                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
-                            tab.classList.remove('active');
-                        });
-                        document.querySelector('.dynasty-tab.song-general').classList.add('active');
-                        document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
-                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
-                    }
-                    scene = songGeneralScene;
-                    activeDynasties = { tang: false, song: true };
-                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
-                        item.classList.remove('active', 'inactive');
-                        if (item.dataset.dynasty === 'song') {
-                            item.classList.add('active');
-                        } else {
-                            item.classList.add('inactive');
-                        }
-                    });
-                } else {
-                    if (currentDynasty === 'general') {
+                // 两者都显示，根据朝代筛选和当前分类决定优先显示哪个场景
+                if (activeDynasties.tang && !activeDynasties.song) {
+                    // 仅勾选唐朝，根据当前分类决定显示哪个场景
+                    if (currentCategory === 'poet') {
+                        // 当前在诗人星空，保持诗人星空
+                        scene = tangScene;
                         currentDynasty = 'tang';
                         document.querySelectorAll('.dynasty-tab').forEach(tab => {
                             tab.classList.remove('active');
@@ -1788,7 +1789,34 @@
                         document.querySelector('.dynasty-tab.tang').classList.add('active');
                         document.querySelector('.title-bar h1').textContent = '大唐诗人星图';
                         document.querySelector('.title-bar p').textContent = 'TANG DYNASTY POETS · 星辰般的诗魂';
-                    } else if (currentDynasty === 'song-general') {
+                    } else if (currentCategory === 'general') {
+                        // 当前在将星星空，保持将星星空
+                        scene = generalScene;
+                        currentDynasty = 'general';
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                    } else {
+                        // 其他情况，默认显示唐朝将星
+                        currentCategory = 'general';
+                        currentDynasty = 'general';
+                        scene = generalScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                    }
+                    activeDynasties = { tang: true, song: false };
+                } else if (!activeDynasties.tang && activeDynasties.song) {
+                    // 仅勾选宋朝，根据当前分类决定显示哪个场景
+                    if (currentCategory === 'poet') {
+                        // 当前在诗人星空，保持诗人星空
+                        scene = songScene;
                         currentDynasty = 'song';
                         document.querySelectorAll('.dynasty-tab').forEach(tab => {
                             tab.classList.remove('active');
@@ -1796,19 +1824,80 @@
                         document.querySelector('.dynasty-tab.song').classList.add('active');
                         document.querySelector('.title-bar h1').textContent = '大宋词人星图';
                         document.querySelector('.title-bar p').textContent = 'SONG DYNASTY POETS · 词韵如星';
+                    } else if (currentCategory === 'song-general') {
+                        // 当前在将星星空，保持将星星空
+                        scene = songGeneralScene;
+                        currentDynasty = 'song-general';
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
+                    } else {
+                        // 其他情况，默认显示宋朝将星
+                        currentCategory = 'song-general';
+                        currentDynasty = 'song-general';
+                        scene = songGeneralScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
                     }
-                    scene = currentDynasty === 'tang' ? tangScene : songScene;
-                    activeDynasties = currentDynasty === 'tang' ? { tang: true, song: false } : { tang: false, song: true };
-                    document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
-                        item.classList.remove('active', 'inactive');
-                        if ((item.dataset.dynasty === 'tang' && currentDynasty === 'tang') ||
-                            (item.dataset.dynasty === 'song' && currentDynasty === 'song')) {
-                            item.classList.add('active');
+                    activeDynasties = { tang: false, song: true };
+                } else {
+                    // 两个都勾选，根据当前分类保持显示
+                    if (currentCategory === 'general') {
+                        scene = generalScene;
+                        currentDynasty = 'general';
+                        activeDynasties = { tang: true, song: false };
+                    } else if (currentCategory === 'song-general') {
+                        scene = songGeneralScene;
+                        currentDynasty = 'song-general';
+                        activeDynasties = { tang: false, song: true };
+                    } else if (currentCategory === 'poet') {
+                        if (currentDynasty === 'tang') {
+                            scene = tangScene;
+                            activeDynasties = { tang: true, song: false };
                         } else {
-                            item.classList.add('inactive');
+                            scene = songScene;
+                            activeDynasties = { tang: false, song: true };
                         }
-                    });
+                    } else {
+                        // 默认显示唐朝诗人
+                        currentCategory = 'poet';
+                        currentDynasty = 'tang';
+                        scene = tangScene;
+                        activeDynasties = { tang: true, song: false };
+                    }
                 }
+                
+                // 更新UI
+                document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                if (currentDynasty === 'tang') {
+                    document.querySelector('.dynasty-tab.tang').classList.add('active');
+                } else if (currentDynasty === 'song') {
+                    document.querySelector('.dynasty-tab.song').classList.add('active');
+                } else if (currentDynasty === 'general') {
+                    document.querySelector('.dynasty-tab.general').classList.add('active');
+                } else if (currentDynasty === 'song-general') {
+                    document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                }
+                
+                document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
+                    item.classList.remove('active', 'inactive');
+                    if (item.dataset.dynasty === 'tang' && activeDynasties.tang) {
+                        item.classList.add('active');
+                    } else if (item.dataset.dynasty === 'song' && activeDynasties.song) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                });
             }
         }
         
