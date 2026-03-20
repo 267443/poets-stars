@@ -462,6 +462,7 @@
         
         .dynasty-dot.tang-dot { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
         .dynasty-dot.song-dot { background: #4169e1; box-shadow: 0 0 12px #4169e1; }
+        .legend-dot.ming-dot { background: linear-gradient(135deg, #8b4513, #d2691e); box-shadow: 0 0 12px rgba(139, 69, 19, 0.6); }
         
         .legend-dot.poet-dot { 
             background: linear-gradient(135deg, #ffd700, #ff8c00); 
@@ -537,6 +538,7 @@
         <div class="dynasty-tab song" data-dynasty="song" onclick="switchDynasty('song')">宋朝星空</div>
         <div class="dynasty-tab general" data-dynasty="general" onclick="switchDynasty('general')">唐朝将星</div>
         <div class="dynasty-tab song-general" data-dynasty="song-general" onclick="switchDynasty('song-general')">宋朝将星</div>
+        <div class="dynasty-tab ming" data-dynasty="ming" onclick="switchDynasty('ming')">明朝将星</div>
     </div>
     
     <div class="poet-info-panel" id="poet-panel">
@@ -569,6 +571,7 @@
         <div class="legend-section-title">朝代筛选</div>
         <div class="legend-item dynasty-filter active" data-dynasty="tang"><div class="legend-dot dynasty-dot tang-dot"></div>唐朝</div>
         <div class="legend-item dynasty-filter active" data-dynasty="song"><div class="legend-dot dynasty-dot song-dot"></div>宋朝</div>
+        <div class="legend-item dynasty-filter active" data-dynasty="ming"><div class="legend-dot ming-dot"></div>明朝</div>
         <div class="legend-divider"></div>
         <div class="legend-section-title">分类筛选</div>
         <div class="legend-item category-filter active" data-category="poet"><div class="legend-dot poet-dot"></div>诗人</div>
@@ -858,7 +861,76 @@
             { id: 1111, name: "孙晖", era: "宋朝", achievement: "抗金将领", battles: [{ name: "抗金战争", description: "绍兴年间，孙晖参与抗金战争。" }], fame: 3, relations: [] },
             { id: 1112, name: "王大节", era: "宋朝", achievement: "抗金将领", battles: [{ name: "抗金战争", description: "绍兴年间，王大节参与抗金战争。" }], fame: 3, relations: [] },
             { id: 1113, name: "田押", era: "宋朝", achievement: "抗金将领", battles: [{ name: "抗金战争", description: "绍兴年间，田押参与抗金战争。" }], fame: 3, relations: [] },
-            { id: 1114, name: "罗盏", era: "宋朝", achievement: "抗金将领", battles: [{ name: "抗金战争", description: "绍兴年间，罗盏参与抗金战争。" }], fame: 3, relations: [] }
+            { id: 1114, name: "罗盏", era: "宋朝", achievement: "抗金将领", battles: [{ name: "抗金战争", description: "绍兴年间，罗盏参与抗金战争。" }], fame: 3, relations: [] },
+            { id: 2001, name: "徐达", era: "明朝", achievement: "开国元勋", battles: [{ name: "鄱阳湖之战", description: "至正二十三年（1363年），徐达率军在鄱阳湖大败陈友谅，为明朝建立奠定基础。" }, { name: "攻克大都", description: "至正二十八年（1368年），徐达率军攻克元大都，灭亡元朝。" }], fame: 1, relations: [{ name: "朱元璋", type: "君臣", strength: "strong" }, { name: "常遇春", type: "袍泽", strength: "strong" }, { name: "李文忠", type: "袍泽", strength: "strong" }] },
+            { id: 2002, name: "朱元璋", era: "明朝", achievement: "明太祖", battles: [{ name: "鄱阳湖之战", description: "至正二十三年（1363年），朱元璋率军在鄱阳湖大败陈友谅，奠定明朝建立基础。" }, { name: "北伐元朝", description: "至正二十七年（1367年），朱元璋北伐元朝，攻克元大都。" }], fame: 1, relations: [{ name: "徐达", type: "部将", strength: "strong" }, { name: "常遇春", type: "部将", strength: "strong" }, { name: "李文忠", type: "部将", strength: "strong" }, { name: "刘伯温", type: "谋士", strength: "strong" }] },
+            { id: 2003, name: "常遇春", era: "明朝", achievement: "开平王", battles: [{ name: "鄱阳湖之战", description: "至正二十三年（1363年），常遇春在鄱阳湖之战中表现英勇，大败陈友谅水军。" }, { name: "攻克大都", description: "至正二十八年（1368年），常遇春随徐达攻克元大都。" }], fame: 1, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "徐达", type: "袍泽", strength: "strong" }, { name: "李文忠", type: "袍泽", strength: "strong" }] },
+            { id: 2004, name: "李文忠", era: "明朝", achievement: "曹国公", battles: [{ name: "北伐元朝", description: "至正二十七年（1367年），李文忠率军北伐元朝，攻克元大都外围。" }], fame: 1, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "徐达", type: "袍泽", strength: "strong" }, { name: "常遇春", type: "袍泽", strength: "strong" }] },
+            { id: 2005, name: "刘伯温", era: "明朝", achievement: "诚意伯", battles: [{ name: "鄱阳湖之战", description: "至正二十三年（1363年），刘伯温为朱元璋出谋划策，在鄱阳湖之战中击败陈友谅。" }], fame: 1, relations: [{ name: "朱元璋", type: "君臣", strength: "strong" }, { name: "李善长", type: "同僚", strength: "medium" }] },
+            { id: 2006, name: "李善长", era: "明朝", achievement: "韩国公", battles: [{ name: "鄱阳湖之战", description: "至正二十三年（1363年），李善长随朱元璋参与鄱阳湖之战，为明朝建立作出贡献。" }], fame: 2, relations: [{ name: "朱元璋", type: "君臣", strength: "strong" }, { name: "刘伯温", type: "同僚", strength: "medium" }] },
+            { id: 2007, name: "傅友德", era: "明朝", achievement: "颍川侯", battles: [{ name: "北伐元朝", description: "至正二十七年（1367年），傅友德率军北伐元朝，多次击败元军。" }], fame: 1, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "徐达", type: "袍泽", strength: "medium" }] },
+            { id: 2008, name: "冯胜", era: "明朝", achievement: "宋国公", battles: [{ name: "北伐元朝", description: "至正二十七年（1367年），冯胜率军北伐元朝，收复甘肃等地。" }], fame: 2, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "徐达", type: "袍泽", strength: "medium" }] },
+            { id: 2009, name: "邓愈", era: "明朝", achievement: "宁河王", battles: [{ name: "北伐元朝", description: "至正二十七年（1367年），邓愈率军北伐元朝，收复河南等地。" }], fame: 2, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "徐达", type: "袍泽", strength: "medium" }] },
+            { id: 2010, name: "沐英", era: "明朝", achievement: "黔宁王", battles: [{ name: "平定西南", description: "洪武十四年（1381年），沐英率军平定西南，收复云南等地，为明朝开拓西南疆域。" }], fame: 1, relations: [{ name: "朱元璋", type: "部将", strength: "strong" }, { name: "傅友德", type: "袍泽", strength: "medium" }] },
+            { id: 2011, name: "蓝玉", era: "明朝", achievement: "凉国公", battles: [{ name: "捕鱼儿海之战", description: "洪武二十一年（1388年），蓝玉在捕鱼儿海之战中大败北元，歼灭北元主力。" }, { name: "平定云南", description: "洪武十四年（1381年），蓝玉随沐英平定云南。" }], fame: 1, relations: [{ name: "沐英", type: "袍泽", strength: "strong" }, { name: "徐达", type: "部将", strength: "medium" }] },
+            { id: 2012, name: "于谦", era: "明朝", achievement: "兵部尚书", battles: [{ name: "北京保卫战", description: "正统十四年（1449年），于谦组织北京保卫战，击败瓦刺大军，保卫明朝。" }], fame: 1, relations: [{ name: "明英宗", type: "君臣", strength: "strong" }, { name: "范广", type: "袍泽", strength: "strong" }] },
+            { id: 2013, name: "戚继光", era: "明朝", achievement: "抗倭名将", battles: [{ name: "台州之战", description: "嘉靖三十四年（1555年），戚继光在台州九战九捷，大败倭寇。" }, { name: "福建抗倭", description: "嘉靖四十一年（1562年），戚继光率军在福建大败倭寇。" }], fame: 1, relations: [{ name: "俞大猷", type: "袍泽", strength: "strong" }, { name: "谭纶", type: "袍泽", strength: "strong" }, { name: "张居正", type: "君臣", strength: "medium" }] },
+            { id: 2014, name: "俞大猷", era: "明朝", achievement: "抗倭名将", battles: [{ name: "福建抗倭", description: "嘉靖四十一年（1562年），俞大猷率军在福建抗倭，与戚继光配合作战。" }], fame: 2, relations: [{ name: "戚继光", type: "袍泽", strength: "strong" }, { name: "谭纶", type: "袍泽", strength: "strong" }] },
+            { id: 2015, name: "谭纶", era: "明朝", achievement: "兵部尚书", battles: [{ name: "浙江抗倭", description: "嘉靖年间，谭纶在浙江组织抗倭，与戚继光配合作战。" }], fame: 2, relations: [{ name: "戚继光", type: "袍泽", strength: "strong" }, { name: "俞大猷", type: "袍泽", strength: "strong" }] },
+            { id: 2016, name: "袁崇焕", era: "明朝", achievement: "蓟辽督师", battles: [{ name: "宁远之战", description: "天启六年（1626年），袁崇焕在宁远之战中击败努尔哈赤的大军。" }, { name: "北京保卫战", description: "崇祯二年（1629年），袁崇焕在北京保卫战中击退后金军队。" }], fame: 1, relations: [{ name: "明思宗", type: "君臣", strength: "strong" }, { name: "祖大寿", type: "部将", strength: "strong" }] },
+            { id: 2017, name: "祖大寿", era: "明朝", achievement: "辽东总兵", battles: [{ name: "宁远之战", description: "天启六年（1626年），祖大寿在宁远之战中协助袁崇焕击败后金军队。" }], fame: 2, relations: [{ name: "袁崇焕", type: "上级", strength: "strong" }, { name: "吴三桂", type: "亲属", strength: "strong" }] },
+            { id: 2018, name: "史可法", era: "明朝", achievement: "忠烈名臣", battles: [{ name: "扬州保卫战", description: "顺治二年（1645年），史可法在扬州保卫战中抵抗清军，城破殉国。" }], fame: 1, relations: [{ name: "明福王", type: "君臣", strength: "strong" }, { name: "黄得功", type: "袍泽", strength: "medium" }] },
+            { id: 2019, name: "郑成功", era: "明朝", achievement: "国姓爷", battles: [{ name: "收复台湾", description: "永历十五年（1661年），郑成功率军收复台湾，驱逐荷兰殖民者。" }, { name: "海战", description: "郑成功多次在海战中击败清军水师。" }], fame: 1, relations: [{ name: "郑芝龙", type: "亲属", strength: "strong" }, { name: "郑经", type: "亲属", strength: "strong" }] },
+            { id: 2020, name: "李定国", era: "明朝", achievement: "晋王", battles: [{ name: "抗清战争", description: "南明时期，李定国在西南抗清，多次击败清军。" }, { name: "两广之战", description: "李定国在两广地区与清军交战，保卫南明政权。" }], fame: 1, relations: [{ name: "永历帝", type: "君臣", strength: "strong" }, { name: "孙可望", type: "政敌", strength: "strong" }] },
+            { id: 2021, name: "孙可望", era: "明朝", achievement: "秦王", battles: [{ name: "抗清战争", description: "南明时期，孙可望在西南抗清，多次击败清军。" }], fame: 2, relations: [{ name: "永历帝", type: "君臣", strength: "medium" }, { name: "李定国", type: "政敌", strength: "strong" }] },
+            { id: 2022, name: "张居正", era: "明朝", achievement: "首辅", battles: [{ name: "俺答汗封贡", description: "隆庆五年（1571年），张居正促成俺答汗封贡，缓和明朝北疆局势。" }], fame: 2, relations: [{ name: "戚继光", type: "部将", strength: "medium" }, { name: "高拱", type: "同僚", strength: "medium" }] },
+            { id: 2023, name: "海瑞", era: "明朝", achievement: "海青天", battles: [{ name: "治理地方", description: "海瑞在地方任上清官廉政，整顿吏治。" }], fame: 2, relations: [] },
+            { id: 2024, name: "王阳明", era: "明朝", achievement: "心学大师", battles: [{ name: "平定宁王之乱", description: "正德十四年（1519年），王阳明平定宁王朱宸濠的叛乱，仅用43天即平定叛乱。" }], fame: 1, relations: [{ name: "王艮", type: "弟子", strength: "strong" }, { name: "湛若水", type: "弟子", strength: "strong" }] },
+            { id: 2025, name: "王艮", era: "明朝", achievement: "泰州学派", battles: [], fame: 2, relations: [{ name: "王阳明", type: "老师", strength: "strong" }, { name: "湛若水", type: "师弟", strength: "strong" }] },
+            { id: 2026, name: "湛若水", era: "明朝", achievement: "甘泉学派", battles: [], fame: 2, relations: [{ name: "王阳明", type: "老师", strength: "strong" }, { name: "王艮", type: "师弟", strength: "strong" }] },
+            { id: 2027, name: "高拱", era: "明朝", achievement: "首辅", battles: [{ name: "俺答汗封贡", description: "隆庆五年（1571年），高拱促成俺答汗封贡，与张居正共同促成此事。" }], fame: 2, relations: [{ name: "张居正", type: "同僚", strength: "strong" }] },
+            { id: 2028, name: "胡宗宪", era: "明朝", achievement: "抗倭总督", battles: [{ name: "浙江抗倭", description: "嘉靖年间，胡宗宪任抗倭总督，组织戚继光、俞大猷等名将抗倭。" }], fame: 2, relations: [{ name: "戚继光", type: "部将", strength: "strong" }, { name: "俞大猷", type: "部将", strength: "strong" }] },
+            { id: 2029, name: "洪承畴", era: "明朝", achievement: "蓟辽督师", battles: [{ name: "松锦之战", description: "崇祯十四年（1641年），洪承畴在松锦之战中失败被俘，后投降清朝。" }], fame: 2, relations: [{ name: "明思宗", type: "君臣", strength: "strong" }, { name: "皇太极", type: "君臣", strength: "strong" }] },
+            { id: 2030, name: "吴三桂", era: "明朝", achievement: "平西王", battles: [{ name: "山海关之战", description: "崇祯十七年（1644年），吴三桂引清军入关，导致明朝灭亡。" }], fame: 2, relations: [{ name: "祖大寿", type: "亲属", strength: "strong" }, { name: "李自成", type: "敌对", strength: "strong" }, { name: "皇太极", type: "君臣", strength: "strong" }] },
+            { id: 2031, name: "李自成", era: "明朝", achievement: "闯王", battles: [{ name: "攻克北京", description: "崇祯十七年（1644年），李自成率军攻克北京，崇祯帝自缢。" }], fame: 1, relations: [{ name: "吴三桂", type: "敌对", strength: "strong" }, { name: "崇祯帝", type: "敌对", strength: "strong" }] },
+            { id: 2032, name: "张献忠", era: "明朝", achievement: "大西皇帝", battles: [{ name: "四川割据", description: "崇祯十七年（1644年），张献忠在四川建立大西政权。" }], fame: 2, relations: [{ name: "李自成", type: "敌对", strength: "medium" }] },
+            { id: 2033, name: "朱棣", era: "明朝", achievement: "明成祖", battles: [{ name: "靖难之役", description: "建文元年（1399年），朱棣发动靖难之役，攻占南京，夺取皇位。" }], fame: 1, relations: [{ name: "姚广孝", type: "谋士", strength: "strong" }, { name: "朱允炆", type: "侄子", strength: "strong" }] },
+            { id: 2034, name: "姚广孝", era: "明朝", achievement: "和尚军师", battles: [{ name: "靖难之役", description: "建文元年（1399年），姚广孝为朱棣出谋划策，成功发动靖难之役。" }], fame: 1, relations: [{ name: "朱棣", type: "君臣", strength: "strong" }, { name: "朱允炆", type: "敌对", strength: "strong" }] },
+            { id: 2035, name: "朱允炆", era: "明朝", achievement: "建文帝", battles: [{ name: "靖难之役", description: "建文元年（1399年），朱允炆在靖难之役中被朱棣击败，失踪。" }], fame: 2, relations: [{ name: "朱棣", type: "叔父", strength: "strong" }, { name: "姚广孝", type: "敌对", strength: "strong" }] },
+            { id: 2036, name: "朱文正", era: "明朝", achievement: "南昌王", battles: [{ name: "洪都保卫战", description: "至正二十三年（1363年），朱文正在洪都保卫战中坚守85天，为朱元璋争取时间。" }], fame: 2, relations: [{ name: "朱元璋", type: "亲属", strength: "strong" }] },
+            { id: 2037, name: "范广", era: "明朝", achievement: "北京守将", battles: [{ name: "北京保卫战", description: "正统十四年（1449年），范广在北京保卫战中英勇作战，击败瓦刺军队。" }], fame: 2, relations: [{ name: "于谦", type: "上级", strength: "strong" }, { name: "石亨", type: "袍泽", strength: "medium" }] },
+            { id: 2038, name: "石亨", era: "明朝", achievement: "武清侯", battles: [{ name: "北京保卫战", description: "正统十四年（1449年），石亨在北京保卫战中与范广配合，击败瓦刺军队。" }, { name: "夺门之变", description: "景泰八年（1457年），石亨发动夺门之变，拥立朱祁钰为帝。" }], fame: 2, relations: [{ name: "范广", type: "袍泽", strength: "strong" }, { name: "于谦", type: "同僚", strength: "medium" }] },
+            { id: 2039, name: "朱祁钰", era: "明朝", achievement: "明代宗", battles: [{ name: "夺门之变", description: "景泰八年（1457年），朱祁钰被石亨拥立为帝，史称景泰帝。" }], fame: 2, relations: [{ name: "石亨", type: "君臣", strength: "strong" }, { name: "朱祁镇", type: "亲属", strength: "strong" }] },
+            { id: 2040, name: "朱祁镇", era: "明朝", achievement: "明英宗", battles: [{ name: "土木堡之变", description: "正统十四年（1449年），朱祁镇在土木堡之变中被瓦刺俘虏，被俘一年。" }, { name: "北京保卫战", description: "正统十四年（1449年），朱祁镇被俘期间，于谦组织北京保卫战。" }], fame: 2, relations: [{ name: "朱祁钰", type: "弟弟", strength: "strong" }, { name: "于谦", type: "君臣", strength: "strong" }] },
+            { id: 2041, name: "朱高煦", era: "明朝", achievement: "汉王", battles: [{ name: "靖难之役", description: "建文元年（1399年），朱高煦随朱棣参与靖难之役，立下战功。" }, { name: "叛乱失败", description: "永乐二十二年（1424年），朱高煦叛乱被朱棣镇压。" }], fame: 2, relations: [{ name: "朱棣", type: "兄弟", strength: "strong" }, { name: "朱高炽", type: "兄弟", strength: "medium" }] },
+            { id: 2042, name: "朱高炽", era: "明朝", achievement: "明仁宗", battles: [{ name: "靖难之役", description: "建文元年（1399年），朱高炽随朱棣参与靖难之役。" }], fame: 2, relations: [{ name: "朱棣", type: "兄弟", strength: "strong" }, { name: "朱高煦", type: "兄弟", strength: "medium" }] },
+            { id: 2043, name: "朱瞻基", era: "明朝", achievement: "明宣宗", battles: [], fame: 2, relations: [{ name: "朱高炽", type: "父亲", strength: "strong" }, { name: "朱高煦", type: "叔叔", strength: "medium" }] },
+            { id: 2044, name: "朱见深", era: "明朝", achievement: "明宪宗", battles: [], fame: 2, relations: [{ name: "朱祁镇", type: "父亲", strength: "strong" }, { name: "朱祁钰", type: "叔叔", strength: "medium" }] },
+            { id: 2045, name: "朱祐樘", era: "明朝", achievement: "明孝宗", battles: [], fame: 2, relations: [{ name: "朱见深", type: "父亲", strength: "strong" }, { name: "朱祁镇", type: "祖父", strength: "medium" }] },
+            { id: 2046, name: "朱厚照", era: "明朝", achievement: "明武宗", battles: [], fame: 2, relations: [{ name: "朱祐樘", type: "父亲", strength: "strong" }, { name: "朱见深", type: "祖父", strength: "medium" }] },
+            { id: 2047, name: "朱厚熜", era: "明朝", achievement: "明世宗", battles: [], fame: 2, relations: [{ name: "朱厚照", type: "父亲", strength: "strong" }, { name: "朱祐樘", type: "祖父", strength: "medium" }] },
+            { id: 2048, name: "朱载坖", era: "明朝", achievement: "明穆宗", battles: [], fame: 2, relations: [{ name: "朱厚熜", type: "父亲", strength: "strong" }, { name: "朱厚照", type: "祖父", strength: "medium" }] },
+            { id: 2049, name: "朱翊钧", era: "明朝", achievement: "明神宗", battles: [], fame: 2, relations: [{ name: "朱载坖", type: "父亲", strength: "strong" }, { name: "张居正", type: "君臣", strength: "strong" }] },
+            { id: 2050, name: "朱常洛", era: "明朝", achievement: "明光宗", battles: [], fame: 2, relations: [{ name: "朱翊钧", type: "父亲", strength: "strong" }, { name: "魏忠贤", type: "太监", strength: "strong" }] },
+            { id: 2051, name: "朱由校", era: "明朝", achievement: "明熹宗", battles: [], fame: 2, relations: [{ name: "朱常洛", type: "父亲", strength: "strong" }, { name: "魏忠贤", type: "太监", strength: "strong" }] },
+            { id: 2052, name: "朱由检", era: "明朝", achievement: "崇祯帝", battles: [{ name: "农民起义", description: "崇祯年间（1628-1644年），朱由检面对李自成等农民起义，无力回天，自缢于煤山。" }], fame: 1, relations: [{ name: "袁崇焕", type: "君臣", strength: "strong" }, { name: "李自成", type: "敌对", strength: "strong" }] },
+            { id: 2053, name: "魏忠贤", era: "明朝", achievement: "权阉", battles: [], fame: 2, relations: [{ name: "朱常洛", type: "君臣", strength: "strong" }, { name: "朱由校", type: "君臣", strength: "strong" }] },
+            { id: 2054, name: "张居正", era: "明朝", achievement: "首辅", battles: [{ name: "俺答汗封贡", description: "隆庆五年（1571年），张居正促成俺答汗封贡，缓和明朝北疆局势。" }], fame: 2, relations: [{ name: "戚继光", type: "部将", strength: "medium" }, { name: "高拱", type: "同僚", strength: "medium" }] },
+            { id: 2055, name: "高拱", era: "明朝", achievement: "首辅", battles: [{ name: "俺答汗封贡", description: "隆庆五年（1571年），高拱促成俺答汗封贡，与张居正共同促成此事。" }], fame: 2, relations: [{ name: "张居正", type: "同僚", strength: "strong" }] },
+            { id: 2056, name: "胡宗宪", era: "明朝", achievement: "抗倭总督", battles: [{ name: "浙江抗倭", description: "嘉靖年间，胡宗宪任抗倭总督，组织戚继光、俞大猷等名将抗倭。" }], fame: 2, relations: [{ name: "戚继光", type: "部将", strength: "strong" }, { name: "俞大猷", type: "部将", strength: "strong" }] },
+            { id: 2057, name: "史可法", era: "明朝", achievement: "忠烈名臣", battles: [{ name: "扬州保卫战", description: "顺治二年（1645年），史可法在扬州保卫战中抵抗清军，城破殉国。" }], fame: 1, relations: [{ name: "明福王", type: "君臣", strength: "strong" }, { name: "黄得功", type: "袍泽", strength: "medium" }] },
+            { id: 2058, name: "黄得功", era: "明朝", achievement: "忠烈将领", battles: [{ name: "扬州保卫战", description: "顺治二年（1645年），黄得功在扬州保卫战中与史可法共同抵抗清军。" }], fame: 2, relations: [{ name: "史可法", type: "君臣", strength: "strong" }, { name: "刘良佐", type: "部将", strength: "medium" }] },
+            { id: 2059, name: "刘良佐", era: "明朝", achievement: "叛将", battles: [{ name: "扬州陷落", description: "顺治二年（1645年），刘良佐叛变，清军得以攻占扬州。" }], fame: 2, relations: [{ name: "黄得功", type: "部将", strength: "medium" }, { name: "史可法", type: "君臣", strength: "strong" }] },
+            { id: 2060, name: "郑成功", era: "明朝", achievement: "国姓爷", battles: [{ name: "收复台湾", description: "永历十五年（1661年），郑成功率军收复台湾，驱逐荷兰殖民者。" }, { name: "海战", description: "郑成功多次在海战中击败清军水师。" }], fame: 1, relations: [{ name: "郑芝龙", type: "亲属", strength: "strong" }, { name: "郑经", type: "亲属", strength: "strong" }] },
+            { id: 2061, name: "郑芝龙", era: "明朝", achievement: "海商", battles: [{ name: "支持郑成功", description: "郑芝龙为郑成功提供后勤支持，助力收复台湾。" }], fame: 2, relations: [{ name: "郑成功", type: "亲属", strength: "strong" }, { name: "郑经", type: "亲属", strength: "strong" }] },
+            { id: 2062, name: "郑经", era: "明朝", achievement: "延平王", battles: [{ name: "保卫台湾", description: "永历十五年（1661年），郑经协助父亲郑成功收复台湾，后继续保卫台湾。" }], fame: 2, relations: [{ name: "郑成功", type: "父亲", strength: "strong" }, { name: "郑芝龙", type: "亲属", strength: "strong" }] },
+            { id: 2063, name: "李定国", era: "明朝", achievement: "晋王", battles: [{ name: "抗清战争", description: "南明时期，李定国在西南抗清，多次击败清军。" }, { name: "两广之战", description: "李定国在两广地区与清军交战，保卫南明政权。" }], fame: 1, relations: [{ name: "永历帝", type: "君臣", strength: "strong" }, { name: "孙可望", type: "政敌", strength: "strong" }] },
+            { id: 2064, name: "孙可望", era: "明朝", achievement: "秦王", battles: [{ name: "抗清战争", description: "南明时期，孙可望在西南抗清，多次击败清军。" }], fame: 2, relations: [{ name: "永历帝", type: "君臣", strength: "medium" }, { name: "李定国", type: "政敌", strength: "strong" }] },
+            { id: 2065, name: "永历帝", era: "明朝", achievement: "南明末帝", battles: [{ name: "抗清战争", description: "永历年间（1647-1662年），永历帝在西南组织抗清，多次与清军交战。" }], fame: 2, relations: [{ name: "李定国", type: "君臣", strength: "strong" }, { name: "孙可望", type: "部将", strength: "medium" }] },
+            { id: 2066, name: "明福王", era: "明朝", achievement: "南明监国", battles: [{ name: "抗清战争", description: "南明年间，明福王在福建组织抗清。" }], fame: 2, relations: [{ name: "史可法", type: "部将", strength: "strong" }, { name: "郑芝龙", type: "同僚", strength: "medium" }] },
+            { id: 2067, name: "隆武帝", era: "明朝", achievement: "南明隆武帝", battles: [{ name: "抗清战争", description: "隆武年间（1645-1646年），隆武帝在福建组织抗清。" }], fame: 2, relations: [{ name: "郑芝龙", type: "部将", strength: "strong" }, { name: "郑成功", type: "部将", strength: "medium" }] },
+            { id: 2068, name: "绍武帝", era: "明朝", achievement: "南明绍武帝", battles: [{ name: "抗清战争", description: "绍武年间（1646年），绍武帝在广东组织抗清。" }], fame: 2, relations: [{ name: "李定国", type: "南明将领", strength: "strong" }, { name: "李自成", type: "敌对", strength: "strong" }] },
+            { id: 2069, name: "朱由榛", era: "明朝", achievement: "南明永历帝", battles: [{ name: "抗清战争", description: "永历年间（1647-1662年），朱由榛在西南组织抗清，多次与清军交战。" }], fame: 2, relations: [{ name: "李定国", type: "君臣", strength: "strong" }, { name: "孙可望", type: "部将", strength: "medium" }] },
         ];
 
         const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
@@ -867,12 +939,13 @@
         const songPoets = poetsData.filter(p => isSongDynasty(p.era));
         const tangGenerals = generalsData.filter(g => g.era === '唐朝');
         const songGenerals = generalsData.filter(g => g.era === '宋朝');
+        const mingGenerals = generalsData.filter(g => g.era === '明朝');
 
         let scene, camera, renderer;
-        let tangScene, songScene, generalScene, songGeneralScene;
-        let tangStars = [], songStars = [], generalStars = [], songGeneralStars = [];
-        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [], songGeneralStarMeshes = [];
-        let tangLines = [], songLines = [], generalLines = [], songGeneralLines = [];
+        let tangScene, songScene, generalScene, songGeneralScene, mingGeneralScene;
+        let tangStars = [], songStars = [], generalStars = [], songGeneralStars = [], mingGeneralStars = [];
+        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [], songGeneralStarMeshes = [], mingGeneralStarMeshes = [];
+        let tangLines = [], songLines = [], generalLines = [], songGeneralLines = [], mingGeneralLines = [];
         let currentDynasty = 'tang';
         let currentCategory = 'poet';
         let showPoets = true;
@@ -890,26 +963,34 @@
         }
 
         function getCurrentStars() {
+            if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralStars;
             if (currentCategory === 'general') return generalStars;
             if (currentCategory === 'song-general') return songGeneralStars;
+            if (currentDynasty === 'ming') return mingGeneralStars;
             return currentDynasty === 'tang' ? tangStars : songStars;
         }
 
         function getCurrentStarMeshes() {
+            if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralStarMeshes;
             if (currentCategory === 'general') return generalStarMeshes;
             if (currentCategory === 'song-general') return songGeneralStarMeshes;
+            if (currentDynasty === 'ming') return mingGeneralStarMeshes;
             return currentDynasty === 'tang' ? tangStarMeshes : songStarMeshes;
         }
-        
+
         function getCurrentLines() {
+            if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralLines;
             if (currentCategory === 'general') return generalLines;
             if (currentCategory === 'song-general') return songGeneralLines;
+            if (currentDynasty === 'ming') return mingGeneralLines;
             return currentDynasty === 'tang' ? tangLines : songLines;
         }
 
         function getCurrentPoetsData() {
+            if (currentCategory === 'general' && currentDynasty === 'ming') return mingGenerals;
             if (currentCategory === 'general') return tangGenerals;
             if (currentCategory === 'song-general') return songGenerals;
+            if (currentDynasty === 'ming') return mingGenerals;
             return currentDynasty === 'tang' ? tangPoets : songPoets;
         }
 
@@ -938,6 +1019,13 @@
                 showGenerals = true;
                 showPoets = false;
                 activeDynasties = { tang: false, song: true };
+            } else if (dynasty === 'ming') {
+                currentCategory = 'general';
+                titleText = '明朝将星星空';
+                subtitleText = 'MING DYNASTY GENERALS · 星辰般的战魂';
+                showGenerals = true;
+                showPoets = false;
+                activeDynasties = { tang: false, song: false, ming: true };
             } else {
                 currentCategory = 'poet';
                 titleText = dynasty === 'tang' ? '大唐诗人星图' : '大宋词人星图';
@@ -945,7 +1033,7 @@
                 // 诗人标签切换时，自动设置分类筛选
                 showPoets = true;
                 showGenerals = false;
-                activeDynasties = dynasty === 'tang' ? { tang: true, song: false } : { tang: false, song: true };
+                activeDynasties = dynasty === 'tang' ? { tang: true, song: false, ming: false } : { tang: false, song: true, ming: false };
             }
             document.querySelector('.title-bar h1').textContent = titleText;
             document.querySelector('.title-bar p').textContent = subtitleText;
@@ -983,6 +1071,12 @@
                     } else {
                         item.classList.add('inactive');
                     }
+                } else if (item.dataset.dynasty === 'ming') {
+                    if (activeDynasties.ming) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
                 }
             });
             
@@ -992,6 +1086,7 @@
             songScene.visible = (currentCategory === 'poet' && currentDynasty === 'song');
             generalScene.visible = (currentCategory === 'general');
             songGeneralScene.visible = (currentCategory === 'song-general');
+            mingGeneralScene.visible = (currentDynasty === 'ming');
             
             if (dynasty === 'tang') {
                 scene = tangScene;
@@ -1001,6 +1096,8 @@
                 scene = generalScene;
             } else if (dynasty === 'song-general') {
                 scene = songGeneralScene;
+            } else if (dynasty === 'ming') {
+                scene = mingGeneralScene;
             }
             
             filterStars();
@@ -1012,6 +1109,7 @@
             songScene = new THREE.Scene();
             generalScene = new THREE.Scene();
             songGeneralScene = new THREE.Scene();
+            mingGeneralScene = new THREE.Scene();
             
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 100;
@@ -1029,11 +1127,13 @@
             songScene.add(ambientLight.clone());
             generalScene.add(ambientLight.clone());
             songGeneralScene.add(ambientLight.clone());
+            mingGeneralScene.add(ambientLight.clone());
 
             createTangPoetStars();
             createSongPoetStars();
             createGeneralStars();
             createSongGeneralStars();
+            createMingGeneralStars();
             
             const poetIdToStar = {};
             tangStars.forEach(star => {
@@ -1056,17 +1156,24 @@
                     poetIdToStar['song_general_' + star.userData.general.id] = star;
                 }
             });
+            mingGeneralStars.forEach(star => {
+                if (star.userData && star.userData.general && star.userData.general.id) {
+                    poetIdToStar['ming_general_' + star.userData.general.id] = star;
+                }
+            });
             window.poetIdToStar = poetIdToStar;
             
             createTangConnections();
             createSongConnections();
             createGeneralConnections();
             createSongGeneralConnections();
+            createMingGeneralConnections();
             
             tangScene.visible = true;
             songScene.visible = false;
             generalScene.visible = false;
             songGeneralScene.visible = false;
+            mingGeneralScene.visible = false;
             scene = tangScene;
             
             addEventListeners();
@@ -1571,13 +1678,125 @@
             renderer.domElement.addEventListener('mouseup', onMouseUp);
             renderer.domElement.addEventListener('wheel', onMouseWheel);
             renderer.domElement.addEventListener('click', onClick);
-            
+
             initCategoryFilters();
         }
-        
+
         let activeFameLevels = [1, 2, 3, 4];
-        let activeDynasties = { tang: true, song: true };
-        
+        let activeDynasties = { tang: true, song: true, ming: true };
+
+        function createMingGeneralStars() {
+            const mingGeneralColors = {
+                1: { main: 0x8b4513, glow: 0xd2691e },
+                2: { main: 0xa0522d, glow: 0xcd853f },
+                3: { main: 0xb8860b, glow: 0xdaa520 },
+                4: { main: 0xd2b48c, glow: 0xdeb887 }
+            };
+
+            const fameSizes = {
+                1: 2.2,
+                2: 1.6,
+                3: 1.1,
+                4: 0.7
+            };
+
+            mingGenerals.forEach((general, index) => {
+                const phi = Math.acos(-1 + (2 * index) / mingGenerals.length);
+                const theta = Math.sqrt(mingGenerals.length * Math.PI) * phi;
+
+                const radius = 40;
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                const geometry = new THREE.SphereGeometry(fameSizes[general.fame], 32, 32);
+                const material = new THREE.MeshStandardMaterial({
+                    color: mingGeneralColors[general.fame].main,
+                    emissive: mingGeneralColors[general.fame].glow,
+                    emissiveIntensity: 0.5
+                });
+
+                const star = new THREE.Mesh(geometry, material);
+                star.position.set(x, y, z);
+                star.userData = { general: general, type: 'ming-general' };
+
+                mingGeneralStars.push(star);
+                mingGeneralScene.add(star);
+
+                const glowGeometry = new THREE.SphereGeometry(fameSizes[general.fame] * 1.5, 32, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: mingGeneralColors[general.fame].glow,
+                    transparent: true,
+                    opacity: 0.15
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(x, y, z);
+                glow.userData = { general: general, type: 'ming-general' };
+                mingGeneralScene.add(glow);
+
+                mingGeneralStarMeshes.push(star, glow);
+            });
+        }
+
+        function createMingGeneralConnections() {
+            const relationStrengths = {
+                strong: { opacity: 0.7 },
+                medium: { opacity: 0.35 },
+                weak: { opacity: 0.12 }
+            };
+
+            mingGenerals.forEach(general => {
+                general.relations.forEach(relation => {
+                    const targetGeneral = mingGenerals.find(g => g.name === relation.name);
+                    if (targetGeneral) {
+                        const sourceIndex = mingGenerals.indexOf(general);
+                        const targetIndex = mingGenerals.indexOf(targetGeneral);
+
+                        if (sourceIndex < targetIndex) {
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / mingGenerals.length);
+                            const sourceTheta = Math.sqrt(mingGenerals.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / mingGenerals.length);
+                            const targetTheta = Math.sqrt(mingGenerals.length * Math.PI) * targetPhi;
+
+                            const radius = 40;
+                            const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
+                            const sourceY = radius * Math.sin(sourcePhi) * Math.sin(sourceTheta);
+                            const sourceZ = radius * Math.cos(sourcePhi);
+
+                            const targetX = radius * Math.sin(targetPhi) * Math.cos(targetTheta);
+                            const targetY = radius * Math.sin(targetPhi) * Math.sin(targetTheta);
+                            const targetZ = radius * Math.cos(targetPhi);
+
+                            const points = [
+                                new THREE.Vector3(sourceX, sourceY, sourceZ),
+                                new THREE.Vector3(targetX, targetY, targetZ)
+                            ];
+
+                            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                            const opacity = relationStrengths[relation.strength] ? relationStrengths[relation.strength].opacity : 0.35;
+
+                            const material = new THREE.LineBasicMaterial({
+                                color: 0x8b4513,
+                                transparent: true,
+                                opacity: opacity
+                            });
+
+                            const line = new THREE.Line(geometry, material);
+                            line.userData = {
+                                source: general.name,
+                                target: relation.name,
+                                strength: relation.strength,
+                                type: 'ming-general'
+                            };
+
+                            mingGeneralLines.push(line);
+                            mingGeneralScene.add(line);
+                        }
+                    }
+                });
+            });
+        }
+
         function initCategoryFilters() {
             const dynastyItems = document.querySelectorAll('.legend-item.dynasty-filter');
             dynastyItems.forEach(item => {
@@ -1588,20 +1807,80 @@
                     item.classList.add('inactive');
                 }
                 item.addEventListener('click', () => {
-                    // 点击朝代筛选时，根据当前分类状态决定切换目标
-                    if (currentCategory === 'general') {
-                        // 当前在唐朝将星，点击唐朝保持，点击宋朝切换到宋朝将星
-                        switchDynasty(dynasty === 'tang' ? 'general' : 'song-general');
-                    } else if (currentCategory === 'song-general') {
-                        // 当前在宋朝将星，点击宋朝保持，点击唐朝切换到唐朝将星
-                        switchDynasty(dynasty === 'song' ? 'song-general' : 'general');
+                    // 切换朝代状态
+                    activeDynasties[dynasty] = !activeDynasties[dynasty];
+                    
+                    // 更新UI状态
+                    if (activeDynasties[dynasty]) {
+                        item.classList.add('active');
+                        item.classList.remove('inactive');
                     } else {
-                        // 当前在诗人模式，切换到对应朝代的诗人
-                        switchDynasty(dynasty);
+                        item.classList.remove('active');
+                        item.classList.add('inactive');
                     }
+                    
+                    // 根据当前状态决定切换到哪个场景
+                    if (!showPoets && showGenerals) {
+                        // 仅显示将星，根据勾选的朝代决定显示哪个将星场景
+                        if (activeDynasties.tang && !activeDynasties.song && !activeDynasties.ming) {
+                            // 仅勾选唐朝
+                            switchDynasty('general');
+                        } else if (!activeDynasties.tang && activeDynasties.song && !activeDynasties.ming) {
+                            // 仅勾选宋朝
+                            switchDynasty('song-general');
+                        } else if (!activeDynasties.tang && !activeDynasties.song && activeDynasties.ming) {
+                            // 仅勾选明朝
+                            switchDynasty('ming');
+                        } else {
+                            // 多个都勾选或都没勾选，保持当前场景
+                            if (!activeDynasties.tang && !activeDynasties.song && !activeDynasties.ming) {
+                                // 都没勾选，默认显示唐朝将星
+                                activeDynasties.tang = true;
+                                document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
+                                switchDynasty('general');
+                            }
+                        }
+                    } else if (showPoets && !showGenerals) {
+                        // 仅显示诗人，根据勾选的朝代决定显示哪个诗人场景
+                        if (activeDynasties.tang && !activeDynasties.song) {
+                            switchDynasty('tang');
+                        } else if (!activeDynasties.tang && activeDynasties.song) {
+                            switchDynasty('song');
+                        } else {
+                            // 两个都勾选或都没勾选，保持当前场景
+                            if (!activeDynasties.tang && !activeDynasties.song) {
+                                // 都没勾选，默认显示唐朝诗人
+                                activeDynasties.tang = true;
+                                document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
+                                switchDynasty('tang');
+                            }
+                        }
+                    } else {
+                        // 同时显示，保持当前状态
+                        if (currentDynasty === 'ming') {
+                            // 当前在明朝将星，保持明朝将星
+                            if (!activeDynasties.ming) {
+                                // 取消勾选明朝，切换到其他朝代
+                                if (activeDynasties.tang) {
+                                    switchDynasty('general');
+                                } else if (activeDynasties.song) {
+                                    switchDynasty('song-general');
+                                } else {
+                                    // 都没勾选，默认显示唐朝将星
+                                    activeDynasties.tang = true;
+                                    document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
+                                    switchDynasty('general');
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 更新场景可见性和筛选
+                    updateAllScenesVisibility();
+                    filterStars();
                 });
             });
-            
+
             const categoryItems = document.querySelectorAll('.legend-item.category-filter');
             categoryItems.forEach(item => {
                 const category = item.dataset.category;
@@ -1696,11 +1975,12 @@
             songScene.visible = showPoets;
             generalScene.visible = showGenerals;
             songGeneralScene.visible = showGenerals;
+            mingGeneralScene.visible = showGenerals;
             
             // 根据朝代筛选和分类筛选确定当前应该显示的场景
             if (!showPoets && showGenerals) {
                 // 仅显示将星，根据朝代筛选决定显示哪个将星场景
-                if (activeDynasties.tang && !activeDynasties.song) {
+                if (activeDynasties.tang && !activeDynasties.song && !activeDynasties.ming) {
                     // 仅勾选唐朝
                     currentCategory = 'general';
                     currentDynasty = 'general';
@@ -1711,7 +1991,7 @@
                     document.querySelector('.dynasty-tab.general').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
                     document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
-                } else if (!activeDynasties.tang && activeDynasties.song) {
+                } else if (!activeDynasties.tang && activeDynasties.song && !activeDynasties.ming) {
                     // 仅勾选宋朝
                     currentCategory = 'song-general';
                     currentDynasty = 'song-general';
@@ -1722,22 +2002,56 @@
                     document.querySelector('.dynasty-tab.song-general').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
                     document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
-                } else {
-                    // 两个都勾选，默认显示唐朝将星
+                } else if (!activeDynasties.tang && !activeDynasties.song && activeDynasties.ming) {
+                    // 仅勾选明朝
                     currentCategory = 'general';
-                    currentDynasty = 'general';
-                    scene = generalScene;
+                    currentDynasty = 'ming';
+                    scene = mingGeneralScene;
                     document.querySelectorAll('.dynasty-tab').forEach(tab => {
                         tab.classList.remove('active');
                     });
-                    document.querySelector('.dynasty-tab.general').classList.add('active');
-                    document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
-                    document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                    document.querySelector('.dynasty-tab.ming').classList.add('active');
+                    document.querySelector('.title-bar h1').textContent = '明朝将星星空';
+                    document.querySelector('.title-bar p').textContent = 'MING DYNASTY GENERALS · 星辰般的战魂';
+                } else {
+                    // 多个都勾选，默认显示当前场景或唐朝将星
+                    if (currentDynasty === 'ming' && activeDynasties.ming) {
+                        currentCategory = 'general';
+                        currentDynasty = 'ming';
+                        scene = mingGeneralScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.ming').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '明朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'MING DYNASTY GENERALS · 星辰般的战魂';
+                    } else if (currentDynasty === 'song-general' && activeDynasties.song) {
+                        currentCategory = 'song-general';
+                        currentDynasty = 'song-general';
+                        scene = songGeneralScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
+                    } else {
+                        currentCategory = 'general';
+                        currentDynasty = 'general';
+                        scene = generalScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.dynasty-tab.general').classList.add('active');
+                        document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
+                        document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
+                    }
                 }
-                activeDynasties = { tang: true, song: false };
                 document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
                     item.classList.remove('active', 'inactive');
-                    if (item.dataset.dynasty === 'tang') {
+                    if ((item.dataset.dynasty === 'tang' && activeDynasties.tang) ||
+                        (item.dataset.dynasty === 'song' && activeDynasties.song) ||
+                        (item.dataset.dynasty === 'ming' && activeDynasties.ming)) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
@@ -1746,7 +2060,7 @@
             } else if (showPoets && !showGenerals) {
                 // 仅显示诗人，根据朝代筛选决定显示哪个诗人场景
                 currentCategory = 'poet';
-                if (currentDynasty === 'general' || currentDynasty === 'song-general') {
+                if (currentDynasty === 'general' || currentDynasty === 'song-general' || currentDynasty === 'ming') {
                     currentDynasty = 'tang';
                 }
                 scene = currentDynasty === 'tang' ? tangScene : songScene;
@@ -1757,12 +2071,12 @@
                     document.querySelector('.dynasty-tab.tang').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '大唐诗人星图';
                     document.querySelector('.title-bar p').textContent = 'TANG DYNASTY POETS · 星辰般的诗魂';
-                    activeDynasties = { tang: true, song: false };
+                    activeDynasties = { tang: true, song: false, ming: false };
                 } else {
                     document.querySelector('.dynasty-tab.song').classList.add('active');
                     document.querySelector('.title-bar h1').textContent = '大宋词人星图';
                     document.querySelector('.title-bar p').textContent = 'SONG DYNASTY POETS · 词韵如星';
-                    activeDynasties = { tang: false, song: true };
+                    activeDynasties = { tang: false, song: true, ming: false };
                 }
                 document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
                     item.classList.remove('active', 'inactive');
@@ -1777,7 +2091,7 @@
                 scene.visible = false;
             } else {
                 // 两者都显示，根据朝代筛选和当前分类决定优先显示哪个场景
-                if (activeDynasties.tang && !activeDynasties.song) {
+                if (activeDynasties.tang && !activeDynasties.song && !activeDynasties.ming) {
                     // 仅勾选唐朝，根据当前分类决定显示哪个场景
                     if (currentCategory === 'poet') {
                         // 当前在诗人星空，保持诗人星空
@@ -1811,8 +2125,8 @@
                         document.querySelector('.title-bar h1').textContent = '唐朝将星星空';
                         document.querySelector('.title-bar p').textContent = 'TANG DYNASTY GENERALS · 星辰般的战魂';
                     }
-                    activeDynasties = { tang: true, song: false };
-                } else if (!activeDynasties.tang && activeDynasties.song) {
+                    activeDynasties = { tang: true, song: false, ming: false };
+                } else if (!activeDynasties.tang && activeDynasties.song && !activeDynasties.ming) {
                     // 仅勾选宋朝，根据当前分类决定显示哪个场景
                     if (currentCategory === 'poet') {
                         // 当前在诗人星空，保持诗人星空
@@ -1846,31 +2160,47 @@
                         document.querySelector('.title-bar h1').textContent = '宋朝将星星空';
                         document.querySelector('.title-bar p').textContent = 'SONG DYNASTY GENERALS · 星辰般的战魂';
                     }
-                    activeDynasties = { tang: false, song: true };
+                    activeDynasties = { tang: false, song: true, ming: false };
+                } else if (!activeDynasties.tang && !activeDynasties.song && activeDynasties.ming) {
+                    // 仅勾选明朝，显示明朝将星
+                    currentCategory = 'general';
+                    currentDynasty = 'ming';
+                    scene = mingGeneralScene;
+                    document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    document.querySelector('.dynasty-tab.ming').classList.add('active');
+                    document.querySelector('.title-bar h1').textContent = '明朝将星星空';
+                    document.querySelector('.title-bar p').textContent = 'MING DYNASTY GENERALS · 星辰般的战魂';
+                    activeDynasties = { tang: false, song: false, ming: true };
                 } else {
-                    // 两个都勾选，根据当前分类保持显示
+                    // 多个都勾选，根据当前分类保持显示
                     if (currentCategory === 'general') {
                         scene = generalScene;
                         currentDynasty = 'general';
-                        activeDynasties = { tang: true, song: false };
+                        activeDynasties = { tang: true, song: false, ming: false };
                     } else if (currentCategory === 'song-general') {
                         scene = songGeneralScene;
                         currentDynasty = 'song-general';
-                        activeDynasties = { tang: false, song: true };
+                        activeDynasties = { tang: false, song: true, ming: false };
+                    } else if (currentDynasty === 'ming') {
+                        scene = mingGeneralScene;
+                        currentDynasty = 'ming';
+                        activeDynasties = { tang: false, song: false, ming: true };
                     } else if (currentCategory === 'poet') {
                         if (currentDynasty === 'tang') {
                             scene = tangScene;
-                            activeDynasties = { tang: true, song: false };
+                            activeDynasties = { tang: true, song: false, ming: false };
                         } else {
                             scene = songScene;
-                            activeDynasties = { tang: false, song: true };
+                            activeDynasties = { tang: false, song: true, ming: false };
                         }
                     } else {
                         // 默认显示唐朝诗人
                         currentCategory = 'poet';
                         currentDynasty = 'tang';
                         scene = tangScene;
-                        activeDynasties = { tang: true, song: false };
+                        activeDynasties = { tang: true, song: false, ming: false };
                     }
                 }
                 
@@ -1886,13 +2216,15 @@
                     document.querySelector('.dynasty-tab.general').classList.add('active');
                 } else if (currentDynasty === 'song-general') {
                     document.querySelector('.dynasty-tab.song-general').classList.add('active');
+                } else if (currentDynasty === 'ming') {
+                    document.querySelector('.dynasty-tab.ming').classList.add('active');
                 }
                 
                 document.querySelectorAll('.legend-item.dynasty-filter').forEach(item => {
                     item.classList.remove('active', 'inactive');
-                    if (item.dataset.dynasty === 'tang' && activeDynasties.tang) {
-                        item.classList.add('active');
-                    } else if (item.dataset.dynasty === 'song' && activeDynasties.song) {
+                    if ((item.dataset.dynasty === 'tang' && activeDynasties.tang) ||
+                        (item.dataset.dynasty === 'song' && activeDynasties.song) ||
+                        (item.dataset.dynasty === 'ming' && activeDynasties.ming)) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
@@ -1920,9 +2252,9 @@
                 return fameMatch;
             }
             
-            const allStars = [...tangStars, ...songStars, ...generalStars, ...songGeneralStars];
-            const allStarMeshes = [...tangStarMeshes, ...songStarMeshes, ...generalStarMeshes, ...songGeneralStarMeshes];
-            const allLines = [...tangLines, ...songLines, ...generalLines, ...songGeneralLines];
+            const allStars = [...tangStars, ...songStars, ...generalStars, ...songGeneralStars, ...mingGeneralStars];
+            const allStarMeshes = [...tangStarMeshes, ...songStarMeshes, ...generalStarMeshes, ...songGeneralStarMeshes, ...mingGeneralStarMeshes];
+            const allLines = [...tangLines, ...songLines, ...generalLines, ...songGeneralLines, ...mingGeneralLines];
             
             allStars.forEach(star => {
                 if (star.userData && star.userData.poet) {
@@ -1960,7 +2292,12 @@
                     star.visible = false;
                 }
             });
-            
+            mingGeneralStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
+
             tangStarMeshes.forEach(mesh => {
                 if (noFameSelected) {
                     mesh.visible = false;
@@ -1981,11 +2318,25 @@
                     mesh.visible = false;
                 }
             });
-            
+            mingGeneralStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
+
             const currentStars = getCurrentStars();
             const currentStarMeshes = getCurrentStarMeshes();
             const currentLines = getCurrentLines();
             const currentPoetsData = getCurrentPoetsData();
+            
+            // 先根据noFameSelected设置所有连线的可见性
+            if (noFameSelected) {
+                tangLines.forEach(line => line.visible = false);
+                songLines.forEach(line => line.visible = false);
+                generalLines.forEach(line => line.visible = false);
+                songGeneralLines.forEach(line => line.visible = false);
+                mingGeneralLines.forEach(line => line.visible = false);
+            }
             
             currentStars.forEach(star => {
                 if (star.userData && star.userData.poet) {
@@ -2005,21 +2356,33 @@
             
             currentLines.forEach(line => {
                 if (line.userData && line.userData.source && line.userData.target) {
+                    // 当noFameSelected为true时，确保所有连线都不可见
+                    if (noFameSelected) {
+                        line.visible = false;
+                        return;
+                    }
+                    
                     const sourcePoet = currentPoetsData.find(p => p.name === line.userData.source);
                     const targetPoet = currentPoetsData.find(p => p.name === line.userData.target);
                     if (sourcePoet && targetPoet) {
-                        line.visible = noFameSelected ? false : (shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet));
+                        line.visible = shouldShowPoet(sourcePoet) && shouldShowPoet(targetPoet);
                     } else if (currentCategory === 'general') {
                         const sourceGeneral = tangGenerals.find(g => g.name === line.userData.source);
                         const targetGeneral = tangGenerals.find(g => g.name === line.userData.target);
                         if (sourceGeneral && targetGeneral) {
-                            line.visible = noFameSelected ? false : (shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral));
+                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
                         }
                     } else if (currentCategory === 'song-general') {
                         const sourceGeneral = songGenerals.find(g => g.name === line.userData.source);
                         const targetGeneral = songGenerals.find(g => g.name === line.userData.target);
                         if (sourceGeneral && targetGeneral) {
-                            line.visible = noFameSelected ? false : (shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral));
+                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
+                        }
+                    } else if (line.userData.type === 'ming-general') {
+                        const sourceGeneral = mingGenerals.find(g => g.name === line.userData.source);
+                        const targetGeneral = mingGenerals.find(g => g.name === line.userData.target);
+                        if (sourceGeneral && targetGeneral) {
+                            line.visible = shouldShowGeneral(sourceGeneral) && shouldShowGeneral(targetGeneral);
                         }
                     }
                 }
@@ -2273,6 +2636,8 @@
                 prefix = 'tang_general_';
             } else if (currentCategory === 'song-general') {
                 prefix = 'song_general_';
+            } else if (currentDynasty === 'ming') {
+                prefix = 'ming_general_';
             } else if (currentCategory === 'poet') {
                 prefix = currentDynasty === 'song' ? 'song_poet_' : 'tang_poet_';
             }
@@ -2281,13 +2646,13 @@
             if (!targetStar) {
                 return;
             }
-            
+
             let targetPoet = null;
             let targetGeneral = null;
             let targetDynasty = '';
             let isTargetGeneral = false;
             let isTargetPoet = false;
-            
+
             if (targetStar.userData && targetStar.userData.poet) {
                 targetPoet = targetStar.userData.poet;
                 isTargetPoet = true;
@@ -2296,13 +2661,21 @@
             } else if (targetStar.userData && targetStar.userData.general) {
                 targetGeneral = targetStar.userData.general;
                 isTargetGeneral = true;
-                targetDynasty = targetStar.userData.type === 'song-general' ? 'song-general' : 'general';
+                const starType = targetStar.userData.type;
+                if (starType === 'song-general') {
+                    targetDynasty = 'song-general';
+                } else if (starType === 'ming-general') {
+                    targetDynasty = 'ming';
+                } else {
+                    targetDynasty = 'general';
+                }
             }
-            
+
             const currentIsGeneral = currentCategory === 'general' || currentCategory === 'song-general';
             const currentIsPoet = currentCategory === 'poet';
-            
-            if (isTargetGeneral && currentIsGeneral) {
+            const currentIsMingGeneral = currentDynasty === 'ming';
+
+            if (isTargetGeneral && (currentIsGeneral || currentIsMingGeneral)) {
                 if (currentDynasty !== targetDynasty) {
                     switchDynasty(targetDynasty);
                     filterStars();
@@ -2325,7 +2698,7 @@
                 });
                 switchDynasty(targetDynasty);
                 filterStars();
-            } else if (isTargetPoet && currentIsGeneral) {
+            } else if (isTargetPoet && (currentIsGeneral || currentIsMingGeneral)) {
                 showPoets = true;
                 showGenerals = false;
                 document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
