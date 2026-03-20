@@ -351,6 +351,135 @@
             margin-right: 5px;
         }
         
+        .search-container {
+            position: fixed;
+            right: 40px;
+            top: 120px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 280px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            background: rgba(18, 18, 31, 0.95);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: 'Noto Serif SC', serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(212, 168, 83, 0.3);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(18, 18, 31, 0.98);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .search-results.show {
+            display: block;
+        }
+        
+        .search-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(212, 168, 83, 0.15);
+        }
+        
+        .search-result-name {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .search-result-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-result-era {
+            background: rgba(212, 168, 83, 0.2);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+        
+        .search-result-type {
+            color: var(--accent-gold);
+        }
+        
+        .search-no-results {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .search-results::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .search-results::-webkit-scrollbar-thumb {
+            background: rgba(212, 168, 83, 0.3);
+            border-radius: 3px;
+        }
+        
+        .search-results::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 168, 83, 0.5);
+        }
+        
         .legend {
             position: fixed;
             left: 40px;
@@ -600,6 +729,14 @@
         <span><span class="key">拖拽</span>旋转视角</span>
         <span><span class="key">滚轮</span>缩放</span>
         <span><span class="key">点击</span>查看诗人</span>
+    </div>
+    
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" id="search-input" placeholder="搜索人物..." autocomplete="off">
+            <span class="search-icon">🔍</span>
+            <div class="search-results" id="search-results"></div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -3237,6 +3374,147 @@
         }
 
         init();
+
+        // 搜索功能
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            
+            if (query.length === 0) {
+                searchResults.classList.remove('show');
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 300);
+        });
+
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length > 0) {
+                searchResults.classList.add('show');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-box')) {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        function performSearch(query) {
+            const results = [];
+            
+            // 搜索诗人
+            poetsData.forEach(poet => {
+                if (poet.name.includes(query)) {
+                    const dynasty = isSongDynasty(poet.era) ? 'song' : 'tang';
+                    results.push({
+                        id: poet.id,
+                        name: poet.name,
+                        era: poet.era,
+                        type: 'poet',
+                        dynasty: dynasty,
+                        typeName: '诗人'
+                    });
+                }
+            });
+            
+            // 搜索将星
+            generalsData.forEach(general => {
+                if (general.name.includes(query)) {
+                    let dynasty;
+                    if (general.era === '唐朝') {
+                        dynasty = 'general';
+                    } else if (general.era === '宋朝') {
+                        dynasty = 'song-general';
+                    } else if (general.era === '明朝') {
+                        dynasty = 'ming';
+                    }
+                    results.push({
+                        id: general.id,
+                        name: general.name,
+                        era: general.era,
+                        type: 'general',
+                        dynasty: dynasty,
+                        typeName: '将星'
+                    });
+                }
+            });
+            
+            // 搜索帝王
+            emperorsData.forEach(emperor => {
+                if (emperor.name.includes(query)) {
+                    results.push({
+                        id: emperor.id,
+                        name: emperor.name,
+                        era: emperor.era,
+                        type: 'emperor',
+                        dynasty: 'emperor',
+                        typeName: '皇帝'
+                    });
+                }
+            });
+            
+            displaySearchResults(results);
+        }
+
+        function displaySearchResults(results) {
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-no-results">未找到匹配的人物</div>';
+                searchResults.classList.add('show');
+                return;
+            }
+            
+            let html = '';
+            results.forEach(result => {
+                html += `
+                    <div class="search-result-item" onclick="selectSearchResult(${result.id}, '${result.type}', '${result.dynasty}')">
+                        <div class="search-result-name">${result.name}</div>
+                        <div class="search-result-info">
+                            <span class="search-result-era">${result.era}</span>
+                            <span class="search-result-type">${result.typeName}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            searchResults.innerHTML = html;
+            searchResults.classList.add('show');
+        }
+
+        function selectSearchResult(id, type, dynasty) {
+            // 切换到对应的星空
+            switchDynasty(dynasty);
+            
+            // 延迟一下，等待场景切换完成
+            setTimeout(() => {
+                // 导航到对应的人物
+                navigateToPoet(id);
+                
+                // 显示人物信息
+                let person;
+                if (type === 'poet') {
+                    person = poetsData.find(p => p.id === id);
+                } else if (type === 'general') {
+                    person = generalsData.find(g => g.id === id);
+                } else if (type === 'emperor') {
+                    person = emperorsData.find(e => e.id === id);
+                }
+                
+                if (person) {
+                    showPoetInfo(person);
+                }
+                
+                // 关闭搜索结果
+                searchResults.classList.remove('show');
+                searchInput.value = '';
+            }, 300);
+        }
     </script>
 </body>
 </html>
