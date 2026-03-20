@@ -413,6 +413,11 @@
             box-shadow: 0 0 20px rgba(30, 58, 95, 0.6);
         }
         
+        .dynasty-tab.emperor.active {
+            border-color: #9370db;
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.6);
+        }
+        
         .legend-item {
             display: flex;
             align-items: center;
@@ -463,6 +468,7 @@
         .dynasty-dot.tang-dot { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
         .dynasty-dot.song-dot { background: #4169e1; box-shadow: 0 0 12px #4169e1; }
         .legend-dot.ming-dot { background: linear-gradient(135deg, #8b4513, #d2691e); box-shadow: 0 0 12px rgba(139, 69, 19, 0.6); }
+        .legend-dot.emperor-dot { background: linear-gradient(135deg, #9370db, #ff69b4); box-shadow: 0 0 12px rgba(147, 112, 219, 0.6); }
         
         .legend-dot.poet-dot { 
             background: linear-gradient(135deg, #ffd700, #ff8c00); 
@@ -539,6 +545,7 @@
         <div class="dynasty-tab general" data-dynasty="general" onclick="switchDynasty('general')">唐朝将星</div>
         <div class="dynasty-tab song-general" data-dynasty="song-general" onclick="switchDynasty('song-general')">宋朝将星</div>
         <div class="dynasty-tab ming" data-dynasty="ming" onclick="switchDynasty('ming')">明朝将星</div>
+        <div class="dynasty-tab emperor" data-dynasty="emperor" onclick="switchDynasty('emperor')">帝王星空</div>
     </div>
     
     <div class="poet-info-panel" id="poet-panel">
@@ -572,10 +579,12 @@
         <div class="legend-item dynasty-filter active" data-dynasty="tang"><div class="legend-dot dynasty-dot tang-dot"></div>唐朝</div>
         <div class="legend-item dynasty-filter active" data-dynasty="song"><div class="legend-dot dynasty-dot song-dot"></div>宋朝</div>
         <div class="legend-item dynasty-filter active" data-dynasty="ming"><div class="legend-dot ming-dot"></div>明朝</div>
+        <div class="legend-item dynasty-filter active" data-dynasty="emperor"><div class="legend-dot emperor-dot"></div>帝王</div>
         <div class="legend-divider"></div>
         <div class="legend-section-title">分类筛选</div>
         <div class="legend-item category-filter active" data-category="poet"><div class="legend-dot poet-dot"></div>诗人</div>
         <div class="legend-item category-filter active" data-category="general"><div class="legend-dot general-dot"></div>将星</div>
+        <div class="legend-item category-filter active" data-category="emperor"><div class="legend-dot emperor-dot"></div>皇帝</div>
         <div class="legend-divider"></div>
         <div class="legend-section-title">人物级别</div>
         <div class="legend-item" data-fame="1"><div class="legend-dot fame-1"></div>诗仙/兵神</div>
@@ -933,6 +942,14 @@
             { id: 2069, name: "朱由榛", era: "明朝", achievement: "南明永历帝", battles: [{ name: "抗清战争", description: "永历年间（1647-1662年），朱由榛在西南组织抗清，多次与清军交战。" }], fame: 2, relations: [{ name: "李定国", type: "君臣", strength: "strong" }, { name: "孙可望", type: "部将", strength: "medium" }] },
         ];
 
+        const emperorsData = [
+            { id: 3001, name: "秦始皇", era: "秦朝", achievement: "千古一帝", works: [{ name: "统一六国", fullText: "公元前221年，秦始皇统一六国，结束了春秋战国以来长达数百年的分裂局面，建立了中国历史上第一个统一的中央集权国家。" }, { name: "统一度量衡", fullText: "秦始皇统一了度量衡、货币和文字，推行车同轨、书同文，为中华文明的发展奠定了基础。" }, { name: "修筑长城", fullText: "秦始皇连接并修缮了战国时期的长城，形成了万里长城，成为中华民族的象征。" }], fame: 1, relations: [{ name: "汉武帝", type: "后世效仿", strength: "weak" }] },
+            { id: 3002, name: "汉武帝", era: "汉朝", achievement: "雄才大略", works: [{ name: "开辟丝绸之路", fullText: "汉武帝派遣张骞出使西域，开辟了丝绸之路，促进了东西方文化的交流和贸易往来。" }, { name: "罢黜百家，独尊儒术", fullText: "汉武帝采纳董仲舒的建议，罢黜百家，独尊儒术，确立了儒家思想的正统地位，影响了中国两千多年。" }, { name: "北击匈奴", fullText: "汉武帝多次派兵北击匈奴，派遣卫青、霍去病等名将，将匈奴势力逐出漠北，解除了匈奴对汉朝的威胁。" }], fame: 1, relations: [{ name: "秦始皇", type: "效仿先贤", strength: "weak" }, { name: "唐太宗", type: "后世效仿", strength: "weak" }] },
+            { id: 3003, name: "唐太宗", era: "唐朝", achievement: "贞观之治", works: [{ name: "贞观之治", fullText: "唐太宗李世民开创了贞观之治，政治清明，经济繁荣，文化昌盛，是中国历史上著名的盛世之一。" }, { name: "虚心纳谏", fullText: "唐太宗虚心纳谏，重用魏征、房玄龄、杜如晦等贤臣，开创了君臣共治的良好局面。" }, { name: "开疆拓土", fullText: "唐太宗多次对外用兵，击败东突厥、高昌、龟兹等，将唐朝的疆域扩展到中亚地区，建立了万国来朝的盛世。" }], fame: 1, relations: [{ name: "汉武帝", type: "效仿先贤", strength: "weak" }, { name: "宋太祖", type: "后世效仿", strength: "weak" }] },
+            { id: 3004, name: "宋太祖", era: "宋朝", achievement: "开国之君", works: [{ name: "杯酒释兵权", fullText: "宋太祖赵匡胤通过杯酒释兵权，和平解除了开国将领的兵权，避免了武将割据，巩固了中央集权。" }, { name: "重文轻武", fullText: "宋太祖推行重文轻武的政策，提高了文官的地位，使宋朝成为中国历史上文化最繁荣的朝代之一。" }, { name: "统一中原", fullText: "宋太祖通过军事手段，先后消灭了南唐、后蜀、南汉等割据政权，基本统一了中原地区。" }], fame: 1, relations: [{ name: "唐太宗", type: "效仿先贤", strength: "weak" }, { name: "明太祖", type: "后世效仿", strength: "weak" }] },
+            { id: 3005, name: "明太祖", era: "明朝", achievement: "洪武大帝", works: [{ name: "驱逐胡虏，恢复中华", fullText: "明太祖朱元璋推翻元朝统治，驱逐蒙古统治者，恢复了汉人政权，建立了大明王朝。" }, { name: "建立明朝", fullText: "明太祖建立了明朝，定都南京，实行了一系列改革，如废除丞相制度、设立锦衣卫等，加强了中央集权。" }, { name: "休养生息", fullText: "明太祖采取休养生息的政策，鼓励农业生产，减轻农民负担，使明朝经济得到恢复和发展。" }], fame: 1, relations: [{ name: "宋太祖", type: "效仿先贤", strength: "weak" }] },
+        ];
+
         const isSongDynasty = (era) => era && (era.includes('宋') || era.includes('南唐') || era.includes('明末清初'));
         
         const tangPoets = poetsData.filter(p => !isSongDynasty(p.era));
@@ -942,14 +959,15 @@
         const mingGenerals = generalsData.filter(g => g.era === '明朝');
 
         let scene, camera, renderer;
-        let tangScene, songScene, generalScene, songGeneralScene, mingGeneralScene;
-        let tangStars = [], songStars = [], generalStars = [], songGeneralStars = [], mingGeneralStars = [];
-        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [], songGeneralStarMeshes = [], mingGeneralStarMeshes = [];
-        let tangLines = [], songLines = [], generalLines = [], songGeneralLines = [], mingGeneralLines = [];
+        let tangScene, songScene, generalScene, songGeneralScene, mingGeneralScene, emperorScene;
+        let tangStars = [], songStars = [], generalStars = [], songGeneralStars = [], mingGeneralStars = [], emperorStars = [];
+        let tangStarMeshes = [], songStarMeshes = [], generalStarMeshes = [], songGeneralStarMeshes = [], mingGeneralStarMeshes = [], emperorStarMeshes = [];
+        let tangLines = [], songLines = [], generalLines = [], songGeneralLines = [], mingGeneralLines = [], emperorLines = [];
         let currentDynasty = 'tang';
         let currentCategory = 'poet';
         let showPoets = true;
         let showGenerals = true;
+        let showEmperors = true;
         let raycaster, mouse;
         let selectedPoet = null;
         let isDragging = false;
@@ -959,10 +977,12 @@
         function getCurrentScene() {
             if (currentCategory === 'general') return generalScene;
             if (currentCategory === 'song-general') return songGeneralScene;
+            if (currentCategory === 'emperor') return emperorScene;
             return currentDynasty === 'tang' ? tangScene : songScene;
         }
 
         function getCurrentStars() {
+            if (currentCategory === 'emperor') return emperorStars;
             if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralStars;
             if (currentCategory === 'general') return generalStars;
             if (currentCategory === 'song-general') return songGeneralStars;
@@ -971,6 +991,7 @@
         }
 
         function getCurrentStarMeshes() {
+            if (currentCategory === 'emperor') return emperorStarMeshes;
             if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralStarMeshes;
             if (currentCategory === 'general') return generalStarMeshes;
             if (currentCategory === 'song-general') return songGeneralStarMeshes;
@@ -979,6 +1000,7 @@
         }
 
         function getCurrentLines() {
+            if (currentCategory === 'emperor') return emperorLines;
             if (currentCategory === 'general' && currentDynasty === 'ming') return mingGeneralLines;
             if (currentCategory === 'general') return generalLines;
             if (currentCategory === 'song-general') return songGeneralLines;
@@ -987,6 +1009,7 @@
         }
 
         function getCurrentPoetsData() {
+            if (currentCategory === 'emperor') return emperorsData;
             if (currentCategory === 'general' && currentDynasty === 'ming') return mingGenerals;
             if (currentCategory === 'general') return tangGenerals;
             if (currentCategory === 'song-general') return songGenerals;
@@ -1026,6 +1049,14 @@
                 showGenerals = true;
                 showPoets = false;
                 activeDynasties = { tang: false, song: false, ming: true };
+            } else if (dynasty === 'emperor') {
+                currentCategory = 'emperor';
+                titleText = '帝王星空';
+                subtitleText = 'EMPERORS · 星辰般的帝王';
+                showGenerals = false;
+                showPoets = false;
+                showEmperors = true;
+                activeDynasties = { tang: false, song: false, ming: false, emperor: true };
             } else {
                 currentCategory = 'poet';
                 titleText = dynasty === 'tang' ? '大唐诗人星图' : '大宋词人星图';
@@ -1049,6 +1080,12 @@
                     }
                 } else if (item.dataset.category === 'general') {
                     if (showGenerals) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
+                } else if (item.dataset.category === 'emperor') {
+                    if (showEmperors) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
@@ -1077,6 +1114,12 @@
                     } else {
                         item.classList.add('inactive');
                     }
+                } else if (item.dataset.dynasty === 'emperor') {
+                    if (activeDynasties.emperor) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
                 }
             });
             
@@ -1086,7 +1129,8 @@
             songScene.visible = (currentCategory === 'poet' && currentDynasty === 'song');
             generalScene.visible = (currentCategory === 'general');
             songGeneralScene.visible = (currentCategory === 'song-general');
-            mingGeneralScene.visible = (currentDynasty === 'ming');
+            mingGeneralScene.visible = (currentDynasty === 'ming' && (currentCategory === 'general' || currentDynasty === 'ming'));
+            emperorScene.visible = (currentCategory === 'emperor');
             
             if (dynasty === 'tang') {
                 scene = tangScene;
@@ -1098,6 +1142,8 @@
                 scene = songGeneralScene;
             } else if (dynasty === 'ming') {
                 scene = mingGeneralScene;
+            } else if (dynasty === 'emperor') {
+                scene = emperorScene;
             }
             
             filterStars();
@@ -1110,6 +1156,7 @@
             generalScene = new THREE.Scene();
             songGeneralScene = new THREE.Scene();
             mingGeneralScene = new THREE.Scene();
+            emperorScene = new THREE.Scene();
             
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 100;
@@ -1128,12 +1175,14 @@
             generalScene.add(ambientLight.clone());
             songGeneralScene.add(ambientLight.clone());
             mingGeneralScene.add(ambientLight.clone());
+            emperorScene.add(ambientLight.clone());
 
             createTangPoetStars();
             createSongPoetStars();
             createGeneralStars();
             createSongGeneralStars();
             createMingGeneralStars();
+            createEmperorStars();
             
             const poetIdToStar = {};
             tangStars.forEach(star => {
@@ -1161,6 +1210,11 @@
                     poetIdToStar['ming_general_' + star.userData.general.id] = star;
                 }
             });
+            emperorStars.forEach(star => {
+                if (star.userData && star.userData.emperor && star.userData.emperor.id) {
+                    poetIdToStar['emperor_' + star.userData.emperor.id] = star;
+                }
+            });
             window.poetIdToStar = poetIdToStar;
             
             createTangConnections();
@@ -1168,12 +1222,14 @@
             createGeneralConnections();
             createSongGeneralConnections();
             createMingGeneralConnections();
+            createEmperorConnections();
             
             tangScene.visible = true;
             songScene.visible = false;
             generalScene.visible = false;
             songGeneralScene.visible = false;
             mingGeneralScene.visible = false;
+            emperorScene.visible = false;
             scene = tangScene;
             
             addEventListeners();
@@ -1683,7 +1739,7 @@
         }
 
         let activeFameLevels = [1, 2, 3, 4];
-        let activeDynasties = { tang: true, song: true, ming: true };
+        let activeDynasties = { tang: true, song: true, ming: true, emperor: true };
 
         function createMingGeneralStars() {
             const mingGeneralColors = {
@@ -1799,6 +1855,120 @@
             });
         }
 
+        function createEmperorStars() {
+            const emperorColors = {
+                1: { main: 0x9370db, glow: 0xff69b4 },
+                2: { main: 0x8a2be2, glow: 0xba55d3 },
+                3: { main: 0x9932cc, glow: 0xda70d6 },
+                4: { main: 0xba55d3, glow: 0xee82ee }
+            };
+
+            const fameSizes = {
+                1: 2.2,
+                2: 1.6,
+                3: 1.1,
+                4: 0.7
+            };
+
+            emperorsData.forEach((emperor, index) => {
+                const phi = Math.acos(-1 + (2 * index) / emperorsData.length);
+                const theta = Math.sqrt(emperorsData.length * Math.PI) * phi;
+
+                const radius = 40;
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                const geometry = new THREE.SphereGeometry(fameSizes[emperor.fame], 32, 32);
+                const material = new THREE.MeshStandardMaterial({
+                    color: emperorColors[emperor.fame].main,
+                    emissive: emperorColors[emperor.fame].glow,
+                    emissiveIntensity: 0.5,
+                    transparent: true,
+                    opacity: 1
+                });
+
+                const star = new THREE.Mesh(geometry, material);
+                star.position.set(x, y, z);
+                star.userData = { emperor: emperor, type: 'emperor' };
+
+                emperorStars.push(star);
+                emperorScene.add(star);
+
+                const glowGeometry = new THREE.SphereGeometry(fameSizes[emperor.fame] * 1.5, 32, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: emperorColors[emperor.fame].glow,
+                    transparent: true,
+                    opacity: 0.15
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(x, y, z);
+                glow.userData = { emperor: emperor, type: 'emperor' };
+                emperorScene.add(glow);
+
+                emperorStarMeshes.push(star, glow);
+            });
+        }
+
+        function createEmperorConnections() {
+            const relationStrengths = {
+                strong: { opacity: 0.7 },
+                medium: { opacity: 0.35 },
+                weak: { opacity: 0.12 }
+            };
+
+            emperorsData.forEach(emperor => {
+                emperor.relations.forEach(relation => {
+                    const targetEmperor = emperorsData.find(e => e.name === relation.name);
+                    if (targetEmperor) {
+                        const sourceIndex = emperorsData.indexOf(emperor);
+                        const targetIndex = emperorsData.indexOf(targetEmperor);
+
+                        if (sourceIndex < targetIndex) {
+                            const sourcePhi = Math.acos(-1 + (2 * sourceIndex) / emperorsData.length);
+                            const sourceTheta = Math.sqrt(emperorsData.length * Math.PI) * sourcePhi;
+                            const targetPhi = Math.acos(-1 + (2 * targetIndex) / emperorsData.length);
+                            const targetTheta = Math.sqrt(emperorsData.length * Math.PI) * targetPhi;
+
+                            const radius = 40;
+                            const sourceX = radius * Math.sin(sourcePhi) * Math.cos(sourceTheta);
+                            const sourceY = radius * Math.sin(sourcePhi) * Math.sin(sourceTheta);
+                            const sourceZ = radius * Math.cos(sourcePhi);
+
+                            const targetX = radius * Math.sin(targetPhi) * Math.cos(targetTheta);
+                            const targetY = radius * Math.sin(targetPhi) * Math.sin(targetTheta);
+                            const targetZ = radius * Math.cos(targetPhi);
+
+                            const points = [
+                                new THREE.Vector3(sourceX, sourceY, sourceZ),
+                                new THREE.Vector3(targetX, targetY, targetZ)
+                            ];
+
+                            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                            const opacity = relationStrengths[relation.strength] ? relationStrengths[relation.strength].opacity : 0.35;
+
+                            const material = new THREE.LineBasicMaterial({
+                                color: 0x9370db,
+                                transparent: true,
+                                opacity: opacity
+                            });
+
+                            const line = new THREE.Line(geometry, material);
+                            line.userData = {
+                                source: emperor.name,
+                                target: relation.name,
+                                strength: relation.strength,
+                                type: 'emperor'
+                            };
+
+                            emperorLines.push(line);
+                            emperorScene.add(line);
+                        }
+                    }
+                });
+            });
+        }
+
         function initCategoryFilters() {
             const dynastyItems = document.querySelectorAll('.legend-item.dynasty-filter');
             dynastyItems.forEach(item => {
@@ -1822,7 +1992,7 @@
                     }
                     
                     // 根据当前状态决定切换到哪个场景
-                    if (!showPoets && showGenerals) {
+                    if (!showPoets && showGenerals && !showEmperors) {
                         // 仅显示将星，根据勾选的朝代决定显示哪个将星场景
                         if (activeDynasties.tang && !activeDynasties.song && !activeDynasties.ming) {
                             // 仅勾选唐朝
@@ -1842,7 +2012,7 @@
                                 switchDynasty('general');
                             }
                         }
-                    } else if (showPoets && !showGenerals) {
+                    } else if (showPoets && !showGenerals && !showEmperors) {
                         // 仅显示诗人，根据勾选的朝代决定显示哪个诗人场景
                         if (activeDynasties.tang && !activeDynasties.song) {
                             switchDynasty('tang');
@@ -1851,6 +2021,28 @@
                         } else {
                             // 两个都勾选或都没勾选，保持当前场景
                             if (!activeDynasties.tang && !activeDynasties.song) {
+                                // 都没勾选，默认显示唐朝诗人
+                                activeDynasties.tang = true;
+                                document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
+                                switchDynasty('tang');
+                            }
+                        }
+                    } else if (!showPoets && !showGenerals && showEmperors) {
+                        // 仅显示皇帝
+                        if (activeDynasties.emperor) {
+                            // 切换到帝王星空
+                            currentCategory = 'emperor';
+                            currentDynasty = 'emperor';
+                            scene = emperorScene;
+                            document.querySelector('.title-bar h1').textContent = '帝王星空';
+                            document.querySelector('.title-bar p').textContent = 'EMPERORS · 星辰般的帝王';
+                        } else {
+                            // 取消勾选帝王，切换到其他朝代
+                            if (activeDynasties.tang) {
+                                switchDynasty('tang');
+                            } else if (activeDynasties.song) {
+                                switchDynasty('song');
+                            } else {
                                 // 都没勾选，默认显示唐朝诗人
                                 activeDynasties.tang = true;
                                 document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
@@ -1867,11 +2059,28 @@
                                     switchDynasty('general');
                                 } else if (activeDynasties.song) {
                                     switchDynasty('song-general');
+                                } else if (activeDynasties.emperor) {
+                                    switchDynasty('emperor');
                                 } else {
                                     // 都没勾选，默认显示唐朝将星
                                     activeDynasties.tang = true;
                                     document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
                                     switchDynasty('general');
+                                }
+                            }
+                        } else if (currentDynasty === 'emperor') {
+                            // 当前在帝王星空，保持帝王星空
+                            if (!activeDynasties.emperor) {
+                                // 取消勾选帝王，切换到其他朝代
+                                if (activeDynasties.tang) {
+                                    switchDynasty('tang');
+                                } else if (activeDynasties.song) {
+                                    switchDynasty('song');
+                                } else {
+                                    // 都没勾选，默认显示唐朝诗人
+                                    activeDynasties.tang = true;
+                                    document.querySelector('.legend-item.dynasty-filter[data-dynasty="tang"]').classList.add('active');
+                                    switchDynasty('tang');
                                 }
                             }
                         }
@@ -1898,6 +2107,12 @@
                     } else {
                         item.classList.add('inactive');
                     }
+                } else if (category === 'emperor') {
+                    if (showEmperors) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('inactive');
+                    }
                 }
                 item.addEventListener('click', () => {
                     if (category === 'poet') {
@@ -1918,10 +2133,19 @@
                             item.classList.add('inactive');
                             item.classList.remove('active');
                         }
+                    } else if (category === 'emperor') {
+                        showEmperors = !showEmperors;
+                        if (showEmperors) {
+                            item.classList.add('active');
+                            item.classList.remove('inactive');
+                        } else {
+                            item.classList.add('inactive');
+                            item.classList.remove('active');
+                        }
                     }
                     
                     // 根据分类筛选状态决定目标场景
-                    if (!showPoets && showGenerals) {
+                    if (!showPoets && showGenerals && !showEmperors) {
                         // 仅显示将星，根据当前勾选的朝代决定显示哪个将星
                         if (activeDynasties.song && !activeDynasties.tang) {
                             // 仅勾选宋朝，切换到宋朝将星
@@ -1930,7 +2154,7 @@
                             // 默认切换到唐朝将星
                             switchDynasty('general');
                         }
-                    } else if (showPoets && !showGenerals) {
+                    } else if (showPoets && !showGenerals && !showEmperors) {
                         // 仅显示诗人，切换到当前朝代的诗人（默认唐朝）
                         if (currentDynasty === 'general' || currentDynasty === 'song-general') {
                             switchDynasty('tang');
@@ -1938,12 +2162,20 @@
                             updateAllScenesVisibility();
                             filterStars();
                         }
-                    } else if (showPoets && showGenerals) {
-                        // 同时显示，保持当前状态但确保场景可见性正确
+                    } else if (!showPoets && !showGenerals && showEmperors) {
+                        // 仅显示皇帝
+                        currentCategory = 'emperor';
+                        currentDynasty = 'emperor';
+                        scene = emperorScene;
+                        document.querySelectorAll('.dynasty-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelector('.title-bar h1').textContent = '帝王星空';
+                        document.querySelector('.title-bar p').textContent = 'EMPERORS · 星辰般的帝王';
                         updateAllScenesVisibility();
                         filterStars();
                     } else {
-                        // 都不显示，保持当前状态
+                        // 多个显示，保持当前状态但确保场景可见性正确
                         updateAllScenesVisibility();
                         filterStars();
                     }
@@ -1978,6 +2210,7 @@
             generalScene.visible = showGenerals;
             songGeneralScene.visible = showGenerals;
             mingGeneralScene.visible = showGenerals;
+            emperorScene.visible = showEmperors;
             
             // 根据朝代筛选和分类筛选确定当前应该显示的场景
             if (!showPoets && showGenerals) {
@@ -2053,7 +2286,8 @@
                     item.classList.remove('active', 'inactive');
                     if ((item.dataset.dynasty === 'tang' && activeDynasties.tang) ||
                         (item.dataset.dynasty === 'song' && activeDynasties.song) ||
-                        (item.dataset.dynasty === 'ming' && activeDynasties.ming)) {
+                        (item.dataset.dynasty === 'ming' && activeDynasties.ming) ||
+                        (item.dataset.dynasty === 'emperor' && activeDynasties.emperor)) {
                         item.classList.add('active');
                     } else {
                         item.classList.add('inactive');
@@ -2254,15 +2488,17 @@
                 return fameMatch;
             }
             
-            const allStars = [...tangStars, ...songStars, ...generalStars, ...songGeneralStars, ...mingGeneralStars];
-            const allStarMeshes = [...tangStarMeshes, ...songStarMeshes, ...generalStarMeshes, ...songGeneralStarMeshes, ...mingGeneralStarMeshes];
-            const allLines = [...tangLines, ...songLines, ...generalLines, ...songGeneralLines, ...mingGeneralLines];
+            const allStars = [...tangStars, ...songStars, ...generalStars, ...songGeneralStars, ...mingGeneralStars, ...emperorStars];
+            const allStarMeshes = [...tangStarMeshes, ...songStarMeshes, ...generalStarMeshes, ...songGeneralStarMeshes, ...mingGeneralStarMeshes, ...emperorStarMeshes];
+            const allLines = [...tangLines, ...songLines, ...generalLines, ...songGeneralLines, ...mingGeneralLines, ...emperorLines];
             
             allStars.forEach(star => {
                 if (star.userData && star.userData.poet) {
                     star.visible = noFameSelected ? false : shouldShowPoet(star.userData.poet);
                 } else if (star.userData && star.userData.general) {
                     star.visible = noFameSelected ? false : shouldShowGeneral(star.userData.general);
+                } else if (star.userData && star.userData.emperor) {
+                    star.visible = noFameSelected ? false : activeFameLevels.includes(star.userData.emperor.fame);
                 }
             });
             
@@ -2271,6 +2507,8 @@
                     mesh.visible = noFameSelected ? false : shouldShowPoet(mesh.userData.poet);
                 } else if (mesh.userData && mesh.userData.general) {
                     mesh.visible = noFameSelected ? false : shouldShowGeneral(mesh.userData.general);
+                } else if (mesh.userData && mesh.userData.emperor) {
+                    mesh.visible = noFameSelected ? false : activeFameLevels.includes(mesh.userData.emperor.fame);
                 }
             });
             
@@ -2299,6 +2537,11 @@
                     star.visible = false;
                 }
             });
+            emperorStars.forEach(star => {
+                if (noFameSelected) {
+                    star.visible = false;
+                }
+            });
 
             tangStarMeshes.forEach(mesh => {
                 if (noFameSelected) {
@@ -2321,6 +2564,11 @@
                 }
             });
             mingGeneralStarMeshes.forEach(mesh => {
+                if (noFameSelected) {
+                    mesh.visible = false;
+                }
+            });
+            emperorStarMeshes.forEach(mesh => {
                 if (noFameSelected) {
                     mesh.visible = false;
                 }
@@ -2443,6 +2691,10 @@
                         const general = clickedObject.userData.general;
                         navigateToPoet(general.id);
                         showPoetInfo(general);
+                    } else if (clickedObject.userData.emperor && clickedObject.visible) {
+                        const emperor = clickedObject.userData.emperor;
+                        navigateToPoet(emperor.id);
+                        showPoetInfo(emperor);
                     }
                 }
             }
@@ -2451,16 +2703,20 @@
         function showPoetInfo(poetOrGeneral, skipCameraAnimation = false) {
             const currentStars = getCurrentStars();
             const currentPoetsData = getCurrentPoetsData();
-            const isGeneral = poetOrGeneral.id >= 1000;
-            const poet = isGeneral ? null : poetOrGeneral;
+            const isGeneral = poetOrGeneral.id >= 1000 && poetOrGeneral.id < 3000;
+            const isEmperor = poetOrGeneral.id >= 3000;
+            const poet = !isGeneral && !isEmperor ? poetOrGeneral : null;
             const general = isGeneral ? poetOrGeneral : null;
+            const emperor = isEmperor ? poetOrGeneral : null;
             
             if (!skipCameraAnimation) {
                 let targetStar = null;
-                if (!isGeneral) {
+                if (!isGeneral && !isEmperor) {
                     targetStar = currentStars.find(star => star.userData && star.userData.poet && star.userData.poet.id === poet.id);
-                } else {
+                } else if (isGeneral) {
                     targetStar = currentStars.find(star => star.userData && star.userData.general && star.userData.general.id === general.id);
+                } else if (isEmperor) {
+                    targetStar = currentStars.find(star => star.userData && star.userData.emperor && star.userData.emperor.id === emperor.id);
                 }
                 if (targetStar) {
                     const originalOpacity = targetStar.material.opacity;
@@ -2494,11 +2750,13 @@
             const worksContainer = document.getElementById('poet-works');
             worksContainer.innerHTML = '';
             
-            // 判断是将星还是诗人
+            // 判断是将星、诗人还是帝王
             const sectionLabel = worksContainer.parentElement.querySelector('.section-label');
             if (sectionLabel) {
                 if (isGeneral) {
                     sectionLabel.textContent = '参加的战役';
+                } else if (isEmperor) {
+                    sectionLabel.textContent = '主要功绩';
                 } else {
                     sectionLabel.textContent = '代表作品';
                 }
@@ -2513,7 +2771,16 @@
                     tag.addEventListener('click', () => showBattleDescription(battle));
                     worksContainer.appendChild(tag);
                 });
-            } else if (!isGeneral && poetOrGeneral.works && poetOrGeneral.works.length > 0) {
+            } else if (isEmperor && poetOrGeneral.works && poetOrGeneral.works.length > 0) {
+                // 帝王显示功绩
+                poetOrGeneral.works.forEach((work, index) => {
+                    const tag = document.createElement('span');
+                    tag.className = 'work-tag';
+                    tag.textContent = work.name;
+                    tag.addEventListener('click', () => showWorkFullText(work));
+                    worksContainer.appendChild(tag);
+                });
+            } else if (!isGeneral && !isEmperor && poetOrGeneral.works && poetOrGeneral.works.length > 0) {
                 // 诗人显示作品
                 poetOrGeneral.works.forEach((work, index) => {
                     const tag = document.createElement('span');
@@ -2525,6 +2792,8 @@
             } else {
                 if (isGeneral) {
                     worksContainer.innerHTML = '<span class="no-works">无记录战役</span>';
+                } else if (isEmperor) {
+                    worksContainer.innerHTML = '<span class="no-works">无记录功绩</span>';
                 } else {
                     worksContainer.innerHTML = '<span class="no-works">无代表作品</span>';
                 }
@@ -2549,10 +2818,14 @@
                         nameSpan.dataset.poetId = relatedPoet.id;
                         nameSpan.addEventListener('click', () => {
                             navigateToPoet(relatedPoet.id, true);
-                            const isTargetGeneral = relatedPoet.id >= 1000;
+                            const isTargetGeneral = relatedPoet.id >= 1000 && relatedPoet.id < 3000;
+                            const isTargetEmperor = relatedPoet.id >= 3000;
                             if (isTargetGeneral) {
                                 const targetGeneral = relatedPoet;
                                 showPoetInfo(targetGeneral, true);
+                            } else if (isTargetEmperor) {
+                                const targetEmperor = relatedPoet;
+                                showPoetInfo(targetEmperor, true);
                             } else {
                                 const targetPoet = relatedPoet;
                                 showPoetInfo(targetPoet, true);
@@ -2642,6 +2915,8 @@
                 prefix = 'song_general_';
             } else if (currentDynasty === 'ming') {
                 prefix = 'ming_general_';
+            } else if (currentCategory === 'emperor') {
+                prefix = 'emperor_';
             } else if (currentCategory === 'poet') {
                 prefix = currentDynasty === 'song' ? 'song_poet_' : 'tang_poet_';
             }
@@ -2653,9 +2928,11 @@
 
             let targetPoet = null;
             let targetGeneral = null;
+            let targetEmperor = null;
             let targetDynasty = '';
             let isTargetGeneral = false;
             let isTargetPoet = false;
+            let isTargetEmperor = false;
 
             if (targetStar.userData && targetStar.userData.poet) {
                 targetPoet = targetStar.userData.poet;
@@ -2673,10 +2950,15 @@
                 } else {
                     targetDynasty = 'general';
                 }
+            } else if (targetStar.userData && targetStar.userData.emperor) {
+                targetEmperor = targetStar.userData.emperor;
+                isTargetEmperor = true;
+                targetDynasty = 'emperor';
             }
 
             const currentIsGeneral = currentCategory === 'general' || currentCategory === 'song-general';
             const currentIsPoet = currentCategory === 'poet';
+            const currentIsEmperor = currentCategory === 'emperor';
             const currentIsMingGeneral = currentDynasty === 'ming';
 
             if (isTargetGeneral && (currentIsGeneral || currentIsMingGeneral)) {
@@ -2689,9 +2971,15 @@
                     switchDynasty(targetDynasty);
                     filterStars();
                 }
+            } else if (isTargetEmperor && currentIsEmperor) {
+                if (currentDynasty !== targetDynasty) {
+                    switchDynasty(targetDynasty);
+                    filterStars();
+                }
             } else if (isTargetGeneral && currentIsPoet) {
                 showGenerals = true;
                 showPoets = false;
+                showEmperors = false;
                 document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
                     cItem.classList.remove('active', 'inactive');
                     if (cItem.dataset.category === 'general') {
@@ -2705,9 +2993,24 @@
             } else if (isTargetPoet && (currentIsGeneral || currentIsMingGeneral)) {
                 showPoets = true;
                 showGenerals = false;
+                showEmperors = false;
                 document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
                     cItem.classList.remove('active', 'inactive');
                     if (cItem.dataset.category === 'poet') {
+                        cItem.classList.add('active');
+                    } else {
+                        cItem.classList.add('inactive');
+                    }
+                });
+                switchDynasty(targetDynasty);
+                filterStars();
+            } else if (isTargetEmperor && (currentIsPoet || currentIsGeneral || currentIsMingGeneral)) {
+                showEmperors = true;
+                showPoets = false;
+                showGenerals = false;
+                document.querySelectorAll('.legend-item.category-filter').forEach(cItem => {
+                    cItem.classList.remove('active', 'inactive');
+                    if (cItem.dataset.category === 'emperor') {
                         cItem.classList.add('active');
                     } else {
                         cItem.classList.add('inactive');
@@ -2721,10 +3024,12 @@
                 const currentStars = getCurrentStars();
                 let currentTargetStar = null;
                 
-                if (!isTargetGeneral) {
+                if (!isTargetGeneral && !isTargetEmperor) {
                     currentTargetStar = currentStars.find(star => star.userData && star.userData.poet && star.userData.poet.id === poetId);
-                } else {
+                } else if (isTargetGeneral) {
                     currentTargetStar = currentStars.find(star => star.userData && star.userData.general && star.userData.general.id === poetId);
+                } else if (isTargetEmperor) {
+                    currentTargetStar = currentStars.find(star => star.userData && star.userData.emperor && star.userData.emperor.id === poetId);
                 }
                 
                 if (!currentTargetStar) return;
@@ -2768,6 +3073,8 @@
                         if (fromRelationClick) {
                             if (isTargetGeneral) {
                                 showPoetInfo(targetGeneral, true);
+                            } else if (isTargetEmperor) {
+                                showPoetInfo(targetEmperor, true);
                             } else {
                                 showPoetInfo(targetPoet, true);
                             }
@@ -2822,6 +3129,12 @@
                     const general = star.userData.general;
                     const speed = general.fame === 1 ? 0.004 : general.fame === 2 ? 0.003 : general.fame === 3 ? 0.002 : 0.001;
                     const scale = general.fame === 1 ? 0.3 : general.fame === 2 ? 0.2 : general.fame === 3 ? 0.15 : 0.1;
+                    const pulse = Math.sin(Date.now() * speed + index * 0.5) * scale + 1;
+                    star.scale.setScalar(pulse);
+                } else if (star.userData && star.userData.emperor) {
+                    const emperor = star.userData.emperor;
+                    const speed = emperor.fame === 1 ? 0.004 : emperor.fame === 2 ? 0.003 : emperor.fame === 3 ? 0.002 : 0.001;
+                    const scale = emperor.fame === 1 ? 0.3 : emperor.fame === 2 ? 0.2 : emperor.fame === 3 ? 0.15 : 0.1;
                     const pulse = Math.sin(Date.now() * speed + index * 0.5) * scale + 1;
                     star.scale.setScalar(pulse);
                 }
