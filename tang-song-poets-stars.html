@@ -1713,7 +1713,9 @@
                 const material = new THREE.MeshStandardMaterial({
                     color: mingGeneralColors[general.fame].main,
                     emissive: mingGeneralColors[general.fame].glow,
-                    emissiveIntensity: 0.5
+                    emissiveIntensity: 0.5,
+                    transparent: true,
+                    opacity: 1
                 });
 
                 const star = new THREE.Mesh(geometry, material);
@@ -2632,7 +2634,9 @@
 
         function navigateToPoet(poetId, fromRelationClick = false) {
             let prefix = '';
-            if (currentCategory === 'general') {
+            if (currentCategory === 'general' && currentDynasty === 'ming') {
+                prefix = 'ming_general_';
+            } else if (currentCategory === 'general') {
                 prefix = 'tang_general_';
             } else if (currentCategory === 'song-general') {
                 prefix = 'song_general_';
