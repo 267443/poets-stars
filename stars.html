@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>唐朝诗人星空 - Tang Dynasty Poets Star Map</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;600&display=swap');
         
         * {
             margin: 0;
@@ -14,23 +14,27 @@
         }
         
         :root {
-            --bg-deep: #000000;
-            --bg-mid: #0A0E27;
-            --star-glow: #fff8e7;
-            --star-gold: #FFD700;
-            --star-silver: #c0c0c0;
-            --text-primary: #FFFFFF;
-            --text-secondary: #94A3B8;
-            --accent-red: #DC143C;
-            --accent-gold: #FFD700;
+            --bg-deep: #0B0F19;
+            --bg-mid: #1A2332;
+            --star-glow: #E8E8E8;
+            --star-gold: #D4A574;
+            --star-silver: #A8B5C2;
+            --text-primary: #F5F5F5;
+            --text-secondary: #9CA3AF;
+            --accent-red: #C94043;
+            --accent-gold: #D4A574;
             
-            --neon-blue: #0080FF;
-            --neon-pink: #FF006E;
-            --neon-cyan: #00FFFF;
-            --neon-purple: #5D34D0;
-            --neon-green: #39FF14;
-            --neon-red: #FF0000;
-            --cyber-bg: #0A0A0A;
+            --hyper-deep-space: #0B0F19;
+            --hyper-midnight: #1A2332;
+            --hyper-starlight: #E8E8E8;
+            --hyper-gold: #D4A574;
+            --hyper-bronze: #8B7355;
+            --hyper-cinnabar: #C94043;
+            --hyper-jade: #5F8D78;
+            --hyper-ink: #2C3E50;
+            --hyper-blue: #4A90D9;
+            --hyper-glass: rgba(255, 255, 255, 0.08);
+            --hyper-glass-border: rgba(255, 255, 255, 0.15);
         }
         
         body {
@@ -72,24 +76,29 @@
             font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: 0.3em;
-            color: var(--neon-cyan);
+            color: var(--hyper-gold);
             text-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
-                0 0 40px var(--neon-cyan);
+                0 2px 4px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(212, 165, 116, 0.3),
+                0 0 40px rgba(212, 165, 116, 0.1);
             margin-bottom: 8px;
             text-transform: uppercase;
-            font-family: 'Courier New', monospace;
-            animation: neon-flicker 2s infinite;
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #D4A574 0%, #F5DEB3 50%, #D4A574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
         
         .title-bar p {
             font-size: 0.9rem;
-            color: var(--neon-pink);
+            color: var(--hyper-bronze);
             letter-spacing: 0.2em;
-            text-shadow: 0 0 10px var(--neon-pink);
-            font-family: 'Courier New', monospace;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-family: 'Inter', sans-serif;
             text-transform: uppercase;
+            opacity: 0.9;
         }
         
         .poet-info-panel {
@@ -98,31 +107,32 @@
             top: 50%;
             transform: translateY(-50%);
             width: 320px;
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--neon-pink);
-            border-radius: 0;
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95), rgba(11, 15, 25, 0.98));
+            border: 1px solid var(--hyper-glass-border);
+            border-radius: 12px;
             padding: 30px;
             z-index: 100;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 0 20px var(--neon-pink),
-                0 0 40px var(--neon-pink),
-                inset 0 0 20px rgba(255, 0, 110, 0.1);
-            backdrop-filter: blur(10px);
-            font-family: 'Courier New', monospace;
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(180%);
+            font-family: 'Inter', sans-serif;
         }
         
         .poet-info-panel::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border: 1px solid var(--neon-cyan);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
         }
         
         .poet-info-panel.visible {
@@ -133,15 +143,19 @@
         .poet-info-panel .poet-name {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--neon-cyan);
+            color: var(--hyper-gold);
             margin-bottom: 8px;
             letter-spacing: 0.1em;
-            border-bottom: 2px solid var(--neon-cyan);
+            border-bottom: 1px solid rgba(212, 165, 116, 0.3);
             padding-bottom: 15px;
             text-transform: uppercase;
-            text-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #D4A574 0%, #F5DEB3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
         }
         
         .poet-info-panel .poet-era {
@@ -154,12 +168,14 @@
         }
         
         .poet-info-panel .era-tag {
-            background: rgba(201, 64, 67, 0.2);
-            color: var(--accent-red);
+            background: linear-gradient(135deg, rgba(201, 64, 67, 0.2), rgba(201, 64, 67, 0.1));
+            color: var(--hyper-cinnabar);
             padding: 4px 12px;
-            border-radius: 2px;
+            border-radius: 6px;
             font-size: 0.75rem;
             letter-spacing: 0.15em;
+            border: 1px solid rgba(201, 64, 67, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .poet-info-panel .poet-works {
@@ -181,28 +197,30 @@
         }
         
         .poet-info-panel .work-tag {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid var(--neon-green);
-            color: var(--neon-green);
+            background: linear-gradient(135deg, rgba(95, 141, 120, 0.15), rgba(95, 141, 120, 0.05));
+            border: 1px solid rgba(95, 141, 120, 0.4);
+            color: var(--hyper-jade);
             padding: 6px 14px;
-            border-radius: 0;
+            border-radius: 8px;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 0 5px var(--neon-green);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .poet-info-panel .work-tag:hover {
-            background: rgba(57, 255, 20, 0.2);
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
+            background: linear-gradient(135deg, rgba(95, 141, 120, 0.3), rgba(95, 141, 120, 0.15));
+            border-color: var(--hyper-gold);
+            color: var(--hyper-gold);
             transform: translateY(-2px);
             box-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan);
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(212, 165, 116, 0.2);
         }
         
         .poet-info-panel .poet-relations {
@@ -221,18 +239,20 @@
         }
         
         .poet-info-panel .relation-name {
-            color: var(--accent-gold);
+            color: var(--hyper-gold);
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 4px 8px;
-            border-radius: 4px;
-            text-shadow: 0 0 8px rgba(212, 168, 83, 0.6);
+            border-radius: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), transparent);
         }
         
         .poet-info-panel .relation-name:hover:not(.disabled) {
-            background: rgba(212, 168, 83, 0.15);
-            transform: translateX(2px);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.25), rgba(212, 165, 116, 0.1));
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.2);
         }
         
         .poet-info-panel .relation-name.disabled {
@@ -245,45 +265,50 @@
         .poet-info-panel .relation-type {
             margin-left: auto;
             font-size: 0.7rem;
-            padding: 3px 10px;
-            border-radius: 2px;
-            background: rgba(150, 150, 200, 0.15);
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.3), rgba(44, 62, 80, 0.15));
             color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
         
         .poet-info-panel .relation-type.bright {
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--star-gold);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.25), rgba(212, 165, 116, 0.1));
+            color: var(--hyper-gold);
+            border-color: rgba(212, 165, 116, 0.3);
         }
         
         .poet-info-panel .close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid var(--neon-red);
-            color: var(--neon-red);
+            background: linear-gradient(135deg, rgba(201, 64, 67, 0.15), rgba(201, 64, 67, 0.05));
+            border: 1px solid rgba(201, 64, 67, 0.3);
+            color: var(--hyper-cinnabar);
             font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            width: 32px;
-            height: 32px;
-            border-radius: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 0 10px var(--neon-red);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .poet-info-panel .close-btn:hover {
-            color: var(--neon-pink);
-            background: rgba(255, 0, 110, 0.2);
-            border-color: var(--neon-pink);
+            color: #fff;
+            background: linear-gradient(135deg, rgba(201, 64, 67, 0.9), rgba(201, 64, 67, 0.7));
+            border-color: var(--hyper-cinnabar);
             transform: rotate(90deg) scale(1.1);
             box-shadow: 
-                0 0 15px var(--neon-pink),
-                0 0 30px var(--neon-pink);
+                0 4px 12px rgba(201, 64, 67, 0.4),
+                0 0 20px rgba(201, 64, 67, 0.2);
         }
         
         .poet-info-panel .poet-achievement {
@@ -292,15 +317,17 @@
         
         .poet-info-panel .achievement-tag {
             display: inline-block;
-            background: linear-gradient(135deg, rgba(212, 168, 83, 0.3), rgba(255, 215, 0, 0.2));
-            color: var(--accent-gold);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.25), rgba(212, 165, 116, 0.1));
+            color: var(--hyper-gold);
             padding: 6px 16px;
-            border-radius: 2px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 165, 116, 0.3);
             font-size: 0.9rem;
             font-weight: 600;
             letter-spacing: 0.1em;
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .poet-info-panel .no-achievement {
@@ -432,30 +459,35 @@
         
         .search-input {
             width: 100%;
-            padding: 12px 40px 12px 15px;
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--neon-green);
-            border-radius: 0;
-            color: var(--neon-cyan);
+            padding: 14px 45px 14px 18px;
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95), rgba(11, 15, 25, 0.98));
+            border: 1px solid var(--hyper-glass-border);
+            border-radius: 12px;
+            color: var(--hyper-gold);
             font-size: 0.9rem;
-            font-family: 'Courier New', monospace;
+            font-family: 'Inter', sans-serif;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.4),
+                0 1px 4px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
         
         .search-input:focus {
-            border-color: var(--neon-cyan);
+            border-color: var(--hyper-gold);
             box-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
-                inset 0 0 15px rgba(0, 255, 255, 0.1);
+                0 4px 20px rgba(212, 165, 116, 0.2),
+                0 0 30px rgba(212, 165, 116, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
         
         .search-input::placeholder {
-            color: var(--neon-purple);
-            opacity: 0.5;
+            color: var(--hyper-bronze);
+            opacity: 0.6;
         }
         
         .search-icon {
@@ -486,26 +518,42 @@
             right: 0;
             left: 0;
             margin-top: 8px;
-            background: rgba(0, 0, 0, 0.98);
-            border: 1px solid var(--neon-purple);
-            border-radius: 0;
+            background: linear-gradient(180deg, rgba(26, 35, 50, 0.98), rgba(11, 15, 25, 0.99));
+            border: 1px solid var(--hyper-glass-border);
+            border-radius: 12px;
             max-height: 400px;
             overflow-y: auto;
             display: none;
-            box-shadow: 0 10px 40px rgba(0, 128, 255, 0.3);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px) saturate(180%);
         }
         
         .search-results.show {
             display: block;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .search-result-item {
-            padding: 12px 15px;
+            padding: 14px 18px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid var(--neon-purple);
-            border-left: 3px solid var(--neon-cyan);
-            background: rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 3px solid transparent;
+            background: transparent;
+            position: relative;
         }
         
         .search-result-item:last-child {
@@ -513,10 +561,10 @@
         }
         
         .search-result-item:hover {
-            background: rgba(0, 128, 255, 0.2);
-            border-left-color: var(--neon-pink);
+            background: linear-gradient(90deg, rgba(212, 165, 116, 0.1), transparent);
+            border-left-color: var(--hyper-gold);
             transform: translateX(4px);
-            box-shadow: 0 0 10px var(--neon-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .search-result-name {
@@ -534,9 +582,11 @@
         }
         
         .search-result-era {
-            background: rgba(212, 168, 83, 0.2);
-            padding: 2px 8px;
-            border-radius: 2px;
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.1));
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            font-size: 0.75rem;
         }
         
         .search-result-type {
@@ -555,16 +605,18 @@
         }
         
         .search-results::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .search-results::-webkit-scrollbar-thumb {
-            background: rgba(212, 168, 83, 0.3);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 3px;
         }
         
+        .search-results::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(212, 165, 116, 0.3), rgba(212, 165, 116, 0.2));
+            border-radius: 3px;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+        
         .search-results::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 168, 83, 0.5);
+            background: linear-gradient(180deg, rgba(212, 165, 116, 0.5), rgba(212, 165, 116, 0.3));
         }
         
         .legend {
@@ -585,21 +637,21 @@
         }
         
         .dynasty-tab {
-            padding: 8px 20px;
+            padding: 10px 24px;
             font-size: 0.85rem;
-            color: var(--neon-cyan);
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 0;
+            color: var(--hyper-bronze);
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.8), rgba(11, 15, 25, 0.9));
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Courier New', monospace;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
             letter-spacing: 0.05em;
             text-transform: uppercase;
             white-space: nowrap;
             box-shadow: 
-                0 0 5px var(--neon-cyan),
-                inset 0 0 10px rgba(0, 255, 255, 0.1);
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -611,7 +663,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.15), transparent);
             transition: left 0.5s;
         }
         
@@ -620,50 +672,53 @@
         }
         
         .dynasty-tab:hover {
-            background: rgba(0, 128, 255, 0.2);
-            border-color: var(--neon-blue);
+            background: linear-gradient(135deg, rgba(74, 144, 217, 0.2), rgba(74, 144, 217, 0.1));
+            border-color: var(--hyper-blue);
             box-shadow: 
-                0 0 10px var(--neon-blue),
-                0 0 20px var(--neon-blue),
-                inset 0 0 15px rgba(0, 128, 255, 0.2);
-            text-shadow: 0 0 10px var(--neon-blue);
+                0 4px 12px rgba(74, 144, 217, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            color: var(--hyper-blue);
+            transform: translateY(-2px);
         }
         
         .dynasty-tab.active {
-            color: var(--neon-pink);
-            background: rgba(255, 0, 110, 0.2);
-            border-color: var(--neon-pink);
+            color: #fff;
+            background: linear-gradient(135deg, rgba(201, 64, 67, 0.8), rgba(201, 64, 67, 0.6));
+            border-color: var(--hyper-cinnabar);
             box-shadow: 
-                0 0 10px var(--neon-pink),
-                0 0 20px var(--neon-pink),
-                inset 0 0 15px rgba(255, 0, 110, 0.2);
-            text-shadow: 0 0 10px var(--neon-pink);
-            animation: glitch 0.3s infinite;
+                0 4px 12px rgba(201, 64, 67, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
         
         .dynasty-tab.tang.active {
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.8), rgba(212, 165, 116, 0.6));
+            border-color: var(--hyper-gold);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4);
         }
         
         .dynasty-tab.song.active {
-            border-color: #4169e1;
-            box-shadow: 0 0 20px rgba(65, 105, 225, 0.3);
+            background: linear-gradient(135deg, rgba(74, 144, 217, 0.8), rgba(74, 144, 217, 0.6));
+            border-color: var(--hyper-blue);
+            box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
         }
         
         .dynasty-tab.general.active {
-            border-color: #dc143c;
-            box-shadow: 0 0 20px rgba(220, 20, 60, 0.4);
+            background: linear-gradient(135deg, rgba(201, 64, 67, 0.8), rgba(201, 64, 67, 0.6));
+            border-color: var(--hyper-cinnabar);
+            box-shadow: 0 4px 12px rgba(201, 64, 67, 0.4);
         }
         
         .dynasty-tab.song-general.active {
-            border-color: #1e3a5f;
-            box-shadow: 0 0 20px rgba(30, 58, 95, 0.6);
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.6));
+            border-color: var(--hyper-ink);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.4);
         }
         
         .dynasty-tab.emperor.active {
-            border-color: #9370db;
-            box-shadow: 0 0 20px rgba(147, 112, 219, 0.6);
+            background: linear-gradient(135deg, rgba(139, 115, 85, 0.8), rgba(139, 115, 85, 0.6));
+            border-color: var(--hyper-bronze);
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.4);
         }
         
         .legend-item {
@@ -671,22 +726,29 @@
             align-items: center;
             margin-bottom: 12px;
             font-size: 0.75rem;
-            color: var(--neon-cyan);
+            color: var(--hyper-bronze);
             cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 4px 8px;
-            border-radius: 0;
-            border: 1px solid var(--neon-purple);
-            font-family: 'Courier New', monospace;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            font-family: 'Inter', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.6), rgba(11, 15, 25, 0.7));
+            box-shadow: 
+                0 2px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         
         .legend-item:hover {
-            background: rgba(0, 255, 255, 0.1);
-            border-color: var(--neon-cyan);
-            transform: translateX(2px);
-            box-shadow: 0 0 10px var(--neon-cyan);
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.15), rgba(212, 165, 116, 0.05));
+            border-color: var(--hyper-gold);
+            transform: translateX(4px);
+            box-shadow: 
+                0 4px 10px rgba(212, 165, 116, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: var(--hyper-gold);
         }
         
         .legend-item.inactive {
@@ -694,17 +756,32 @@
         }
         
         .legend-dot {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            margin-right: 10px;
-            transition: all 0.3s ease;
+            margin-right: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3);
         }
         
-        .legend-dot.fame-1 { background: #fff; box-shadow: 0 0 15px #fff; }
-        .legend-dot.fame-2 { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
-        .legend-dot.fame-3 { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
-        .legend-dot.fame-4 { background: #808080; box-shadow: 0 0 5px #808080; }
+        .legend-dot.fame-1 { 
+            background: radial-gradient(circle at 30% 30%, #ffffff, #e8e8e8);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        .legend-dot.fame-2 { 
+            background: radial-gradient(circle at 30% 30%, #f5deb3, #d4a574);
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        .legend-dot.fame-3 { 
+            background: radial-gradient(circle at 30% 30%, #d1d5db, #9ca3af);
+            box-shadow: 0 2px 8px rgba(156, 163, 175, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        .legend-dot.fame-4 { 
+            background: radial-gradient(circle at 30% 30%, #9ca3af, #6b7280);
+            box-shadow: 0 2px 8px rgba(107, 114, 128, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
         
         .legend-section-title {
             font-size: 0.85rem;
@@ -720,18 +797,30 @@
             margin: 15px 0;
         }
         
-        .dynasty-dot.tang-dot { background: #ffd700; box-shadow: 0 0 12px #ffd700; }
-        .dynasty-dot.song-dot { background: #4169e1; box-shadow: 0 0 12px #4169e1; }
-        .legend-dot.ming-dot { background: linear-gradient(135deg, #8b4513, #d2691e); box-shadow: 0 0 12px rgba(139, 69, 19, 0.6); }
-        .legend-dot.emperor-dot { background: linear-gradient(135deg, #9370db, #ff69b4); box-shadow: 0 0 12px rgba(147, 112, 219, 0.6); }
+        .dynasty-dot.tang-dot { 
+            background: radial-gradient(circle at 30% 30%, #f5deb3, #d4a574);
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        .dynasty-dot.song-dot { 
+            background: radial-gradient(circle at 30% 30%, #7ab8f7, #4a90d9);
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        .legend-dot.ming-dot { 
+            background: radial-gradient(circle at 30% 30%, #d4a574, #8b7355);
+            box-shadow: 0 2px 8px rgba(139, 115, 85, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        .legend-dot.emperor-dot { 
+            background: radial-gradient(circle at 30% 30%, #f5deb3, #dda0dd);
+            box-shadow: 0 2px 8px rgba(221, 160, 221, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
         
         .legend-dot.poet-dot { 
-            background: linear-gradient(135deg, #ffd700, #ff8c00); 
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+            background: radial-gradient(circle at 30% 30%, #ffd700, #d4a574);
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
         }
         .legend-dot.general-dot { 
-            background: linear-gradient(135deg, #dc143c, #ff4500); 
-            box-shadow: 0 0 12px rgba(220, 20, 60, 0.6);
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c94043);
+            box-shadow: 0 2px 8px rgba(201, 64, 67, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
         }
         
         .legend-item.inactive .legend-dot {
@@ -755,7 +844,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-deep);
+            background: linear-gradient(135deg, var(--hyper-deep-space), var(--hyper-midnight));
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -769,7 +858,7 @@
             pointer-events: none;
         }
         
-        .crt-overlay {
+        .vignette-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -777,62 +866,31 @@
             height: 100%;
             pointer-events: none;
             z-index: 9999;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-        }
-        
-        .crt-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%,
-                rgba(0, 0, 0, 0.25) 50%
-            );
-            background-size: 100% 2px;
-            animation: scanlines 8s linear infinite;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
         }
         
         .loading-text {
             font-size: 1.2rem;
-            color: var(--text-secondary);
+            color: var(--hyper-gold);
             letter-spacing: 0.3em;
-            animation: pulse 2s infinite;
+            animation: fadeInOut 2s ease-in-out infinite;
+            font-family: 'Cinzel', serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
         
-        @keyframes scanlines {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100vh); }
-        }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        
-        @keyframes neon-flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
-            20%, 24%, 55% {
-                text-shadow: none;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
@@ -842,7 +900,7 @@
         <div class="loading-text">星辰正在汇聚...</div>
     </div>
     
-    <div class="crt-overlay"></div>
+    <div class="vignette-overlay"></div>
     
     <div id="canvas-container"></div>
     
@@ -1661,10 +1719,10 @@
 
         function createTangPoetStars() {
             const fameColors = {
-                1: { color: 0xffffff, emissive: 0xffd700, intensity: 2.0 },
-                2: { color: 0xffd700, emissive: 0xffa500, intensity: 1.5 },
-                3: { color: 0xc0c0c0, emissive: 0x909090, intensity: 1.0 },
-                4: { color: 0x808080, emissive: 0x606060, intensity: 0.6 }
+                1: { color: 0xF5F5F5, emissive: 0xD4A574, intensity: 2.0 },
+                2: { color: 0xD4A574, emissive: 0xB8956A, intensity: 1.5 },
+                3: { color: 0xA8B5C2, emissive: 0x8A9AA8, intensity: 1.0 },
+                4: { color: 0x9CA3AF, emissive: 0x6B7280, intensity: 0.6 }
             };
             
             const fameSizes = {
@@ -1733,10 +1791,10 @@
 
         function createSongPoetStars() {
             const songColors = {
-                1: { color: 0xffffff, emissive: 0x4169e1, intensity: 2.0 },
-                2: { color: 0x6495ed, emissive: 0x1e90ff, intensity: 1.5 },
-                3: { color: 0x87ceeb, emissive: 0x4682b4, intensity: 1.0 },
-                4: { color: 0x708090, emissive: 0x4a6a8a, intensity: 0.6 }
+                1: { color: 0xF5F5F5, emissive: 0x4A90D9, intensity: 2.0 },
+                2: { color: 0x7AB8F7, emissive: 0x4A90D9, intensity: 1.5 },
+                3: { color: 0x9DB8D9, emissive: 0x6A98B8, intensity: 1.0 },
+                4: { color: 0x8A9AA8, emissive: 0x5A7A88, intensity: 0.6 }
             };
             
             const fameSizes = {
@@ -1923,10 +1981,10 @@
 
         function createGeneralStars() {
             const generalColors = {
-                1: { main: 0xff4444, glow: 0xff6666 },
-                2: { main: 0xff6b6b, glow: 0xff8888 },
-                3: { main: 0xff8c8c, glow: 0xffaaaa },
-                4: { main: 0xffaaaa, glow: 0xffcccc }
+                1: { main: 0xC94043, glow: 0xE85A5D },
+                2: { main: 0xD95A5D, glow: 0xE87477 },
+                3: { main: 0xE87477, glow: 0xF08E91 },
+                4: { main: 0xF08E91, glow: 0xF8A8AB }
             };
             
             const fameSizes = {
@@ -2012,7 +2070,7 @@
                             const opacity = relationStrengths[relation.strength].opacity;
                             
                             const material = new THREE.LineBasicMaterial({
-                                color: 0xff4444,
+                                color: 0xC94043,
                                 transparent: true,
                                 opacity: opacity
                             });
@@ -2035,10 +2093,10 @@
 
         function createSongGeneralStars() {
             const songGeneralColors = {
-                1: { main: 0x1e3a5f, glow: 0x2e5a8f },
-                2: { main: 0x2a4a7f, glow: 0x3a6aaf },
-                3: { main: 0x3a5a9f, glow: 0x4a7abf },
-                4: { main: 0x4a6aaf, glow: 0x5a8acf }
+                1: { main: 0x2C3E50, glow: 0x3D566E },
+                2: { main: 0x3D566E, glow: 0x4E6D8C },
+                3: { main: 0x4E6D8C, glow: 0x5F84AA },
+                4: { main: 0x5F84AA, glow: 0x709BC8 }
             };
             
             const fameSizes = {
@@ -2124,7 +2182,7 @@
                             const opacity = relationStrengths[relation.strength].opacity;
                             
                             const material = new THREE.LineBasicMaterial({
-                                color: 0x1e3a5f,
+                                color: 0x2C3E50,
                                 transparent: true,
                                 opacity: opacity
                             });
@@ -2161,10 +2219,10 @@
 
         function createMingGeneralStars() {
             const mingGeneralColors = {
-                1: { main: 0x8b4513, glow: 0xd2691e },
-                2: { main: 0xa0522d, glow: 0xcd853f },
-                3: { main: 0xb8860b, glow: 0xdaa520 },
-                4: { main: 0xd2b48c, glow: 0xdeb887 }
+                1: { main: 0x8B7355, glow: 0xA68B6B },
+                2: { main: 0xA68B6B, glow: 0xC1A381 },
+                3: { main: 0xC1A381, glow: 0xDCB797 },
+                4: { main: 0xDCB797, glow: 0xF7CBAD }
             };
 
             const fameSizes = {
@@ -2252,7 +2310,7 @@
                             const opacity = relationStrengths[relation.strength] ? relationStrengths[relation.strength].opacity : 0.35;
 
                             const material = new THREE.LineBasicMaterial({
-                                color: 0x8b4513,
+                                color: 0x8B7355,
                                 transparent: true,
                                 opacity: opacity
                             });
@@ -2275,10 +2333,10 @@
 
         function createEmperorStars() {
             const emperorColors = {
-                1: { main: 0x9370db, glow: 0xff69b4 },
-                2: { main: 0x8a2be2, glow: 0xba55d3 },
-                3: { main: 0x9932cc, glow: 0xda70d6 },
-                4: { main: 0xba55d3, glow: 0xee82ee }
+                1: { main: 0xD4A574, glow: 0xE8C49A },
+                2: { main: 0xC99A6A, glow: 0xDDAF8A },
+                3: { main: 0xBE8F60, glow: 0xD2A47A },
+                4: { main: 0xB38456, glow: 0xC7996A }
             };
 
             const fameSizes = {
@@ -2366,7 +2424,7 @@
                             const opacity = relationStrengths[relation.strength] ? relationStrengths[relation.strength].opacity : 0.35;
 
                             const material = new THREE.LineBasicMaterial({
-                                color: 0x9370db,
+                                color: 0xD4A574,
                                 transparent: true,
                                 opacity: opacity
                             });
